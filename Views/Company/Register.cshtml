@@ -1,0 +1,56 @@
+﻿@model Company
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Company Registration</h2>
+
+@using (@Html.BeginForm("Create", "Company"))
+{
+    @Html.ValidationSummary()
+    <div class="mb-3">
+        @Html.LabelFor(c => c.Name)
+        @Html.TextBoxFor(c => c.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(c => c.Name)
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(c => c.Email)
+        @Html.TextBoxFor(c => c.Email, new { @class = "form-control", type = "email" })
+        @Html.ValidationMessageFor(c => c.Email)
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(c => c.Address)
+        @Html.TextBoxFor(c => c.Address, new { @class = "form-control" })
+        @Html.ValidationMessageFor(c => c.Address)
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(c => c.Contact)
+        @Html.TextBoxFor(c => c.Contact, new { @class = "form-control" })
+        @Html.ValidationMessageFor(c => c.Contact)
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(c => c.Description)
+        @Html.TextBoxFor(c => c.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(c => c.Description)
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(c => c.Password)
+        @Html.PasswordFor(c => c.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(c => c.Password)
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(c => c.ConfirmPassword)
+        @Html.PasswordFor(c => c.ConfirmPassword, new { @class = "form-control" })
+        @Html.ValidationMessageFor(c => c.ConfirmPassword)
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+}

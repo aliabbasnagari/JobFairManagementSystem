@@ -13,12 +13,26 @@ namespace JobFairManagementSystem.Controllers
             _logger = logger;
         }
 
+
         public IActionResult Index()
         {
             return View();
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult AdministratorOptions()
+        {
+            return View();
+        }
+        public IActionResult RecruiterOptions()
+        {
+            return View();
+        }
+        public IActionResult CandidateOptions()
         {
             return View();
         }

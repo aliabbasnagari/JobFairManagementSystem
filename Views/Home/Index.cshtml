@@ -3,6 +3,14 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Job Fair 2025</h1>
+    
+    <h5>Are you?</h5>
+    
+    <div class="d-flex">
+        @Html.ActionLink("Administrator", "AdministratorOptions", "Home", null, new { @class = "btn btn-primary m-3" })
+        @Html.ActionLink("Company", "Register", "Company", null, new { @class = "btn btn-primary m-3" })
+        @Html.ActionLink("Candidate", "CandidateOptions", "Home", null, new { @class = "btn btn-primary m-3" })
+    </div>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
