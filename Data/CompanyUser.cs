@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace JobFairManagementSystem.Models
+namespace JobFairManagementSystem.Data
 {
-    public class Company
+    public class CompanyUser : ApplicationUser
     {
         [Required]
         [StringLength(255)]
@@ -10,7 +10,7 @@ namespace JobFairManagementSystem.Models
 
         [Required]
         [StringLength(255)]
-        public string Email { get; set; }
+        public string Description { get; set; }
 
         [Required]
         [StringLength(255)]
@@ -18,11 +18,7 @@ namespace JobFairManagementSystem.Models
 
         [Required]
         [StringLength(255)]
-        public string Password { get; set; }
-
-        [Required]
-        [StringLength(255)]
-        [Compare("Password")]
-        public string ConfirmPassword { get; set; }
+        [EmailAddress]
+        public string ContactEmail { get; set; }
     }
 }

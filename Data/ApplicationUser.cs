@@ -1,9 +1,8 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace JobFairManagementSystem.Data
+namespace JobFairManagementSystem.Data;
+
+public class ApplicationUser : IdentityUser
 {
-    public class ApplicationUser: IdentityUser
-    {
-    }
+    public bool IsVerified { get; set; }
 }

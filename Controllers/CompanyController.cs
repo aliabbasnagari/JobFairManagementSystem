@@ -1,50 +1,113 @@
-﻿using System.Diagnostics;
-using JobFairManagementSystem.Data;
+﻿using JobFairManagementSystem.Data;
 using JobFairManagementSystem.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using JobFairManagementSystem.CustomAttributes;
+using Microsoft.AspNetCore.Authorization;
 
-namespace JobFairManagementSystem.Controllers
+namespace JobFairManagementSystem.Controllers;
+
+public class CompanyController : Controller
 {
-    public class CompanyController : Controller
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly ApplicationDbContext _context;
+
+    public CompanyController(UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        RoleManager<IdentityRole> roleManager,
+        ApplicationDbContext context)
     {
-        private ApplicationDbContext context { get; set; }
-        public CompanyController(ApplicationDbContext context)
-        {
-            this.context = context;
-        }
-        public IActionResult Index()
-        {
-            return View();
-        }
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _roleManager = roleManager;
+        _context = context;
+    }
 
-        public IActionResult Register()
-        {
-            Debug.WriteLine("REGISTER");
-            return View();
-        }
+    // GET
+    public IActionResult Index()
+    {
+        if (_signInManager.IsSignedIn(User)) return RedirectToAction("Home");
+        return View("Login");
+    }
 
-        [HttpPost]
-        public IActionResult Create(Company company)
+    [Authorize(Roles = "Company")]
+    [Verified]
+    public async Task<IActionResult> HomeAsync()
+    {
+        var model = await _userManager.GetUserAsync(User);
+        if (model == null) return View("Login");
+        return View((CompanyUser)model);
+    }
+
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginVM model)
+    {
+        Debug.WriteLine("DEBUG:::::Login " + model.Email);
+
+        if (ModelState.IsValid)
         {
-            if (!ModelState.IsValid)
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null) return View("Login", model);
+
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+            if (result.Succeeded) return RedirectToAction("Home");
+
+        }
+        return View("Login", model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Register(Company model)
+    {
+        Debug.WriteLine("DEBUG:::::Register");
+        if (ModelState.IsValid)
+        {
+            var roleExists = await _roleManager.RoleExistsAsync(UserRoles.CompanyRole);
+            if (roleExists)
             {
-                return View("Register", company);
+                var user = new CompanyUser()
+                {
+                    Name = model.Name,
+                    UserName = model.Name,
+                    Address = model.Address,
+                    Email = model.Email,
+                    IsVerified = false
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // if (!roleExists)    await _roleManager.CreateAsync(new IdentityRole(UserRoles.CompanyRole));
+                    await _userManager.AddToRoleAsync(user, UserRoles.CompanyRole);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Home");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                    Debug.WriteLine("DEBUG:::::Register-" + error.Description);
+                }
             }
-
-            if (!company.Password.Equals(company.ConfirmPassword))
-            {
-                ModelState.AddModelError("ConfirmPassword", "Password do not match.");
-                return View("Register", company);
-            }
-
-            context.Companies.Add(company);
-            context.SaveChanges();
-            return RedirectToAction("Index", "Home");
         }
+        return View("Register", model);
+    }
 
-        protected override void Dispose(bool disposing)
-        {
-            context.Dispose();
-        }
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index");
     }
 }

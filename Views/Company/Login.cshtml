@@ -1,0 +1,31 @@
+﻿@model LoginVM
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>title</h2>
+
+@using (Html.BeginForm("Login", "Company"))
+{
+    @Html.ValidationSummary()
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @type = "email" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Password)
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+    </div>
+
+    <div class="mb-3">
+        <label>
+            @Html.CheckBoxFor(m => m.RememberMe) Remember me
+        </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+}

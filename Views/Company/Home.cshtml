@@ -1,0 +1,16 @@
+﻿@model JobFairManagementSystem.Data.CompanyUser
+
+@{
+    ViewBag.Title = "Home";
+    Layout = "_Layout";
+}
+
+<h2>Company Home</h2>
+
+<h1>@Model.Name</h1>
+
+<h1>@Model.Address</h1>
+
+<h1>@Model.Email</h1>
+
+<a asp-controller="Company" asp-action="Logout" class="btn btn-danger">Logout</a>

@@ -5,51 +5,34 @@
     Layout = "_Layout";
 }
 
-<h2>Company Registration</h2>
+<h2>title</h2>
 
-@using (@Html.BeginForm("Create", "Company"))
+@using (Html.BeginForm("Register", "Company"))
 {
     @Html.ValidationSummary()
     <div class="mb-3">
-        @Html.LabelFor(c => c.Name)
-        @Html.TextBoxFor(c => c.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(c => c.Name)
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
     </div>
 
     <div class="mb-3">
-        @Html.LabelFor(c => c.Email)
-        @Html.TextBoxFor(c => c.Email, new { @class = "form-control", type = "email" })
-        @Html.ValidationMessageFor(c => c.Email)
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @type = "email" })
     </div>
 
     <div class="mb-3">
-        @Html.LabelFor(c => c.Address)
-        @Html.TextBoxFor(c => c.Address, new { @class = "form-control" })
-        @Html.ValidationMessageFor(c => c.Address)
+        @Html.LabelFor(m => m.Address)
+        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
     </div>
 
     <div class="mb-3">
-        @Html.LabelFor(c => c.Contact)
-        @Html.TextBoxFor(c => c.Contact, new { @class = "form-control" })
-        @Html.ValidationMessageFor(c => c.Contact)
+        @Html.LabelFor(m => m.Password)
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
     </div>
 
     <div class="mb-3">
-        @Html.LabelFor(c => c.Description)
-        @Html.TextBoxFor(c => c.Description, new { @class = "form-control" })
-        @Html.ValidationMessageFor(c => c.Description)
-    </div>
-
-    <div class="mb-3">
-        @Html.LabelFor(c => c.Password)
-        @Html.PasswordFor(c => c.Password, new { @class = "form-control" })
-        @Html.ValidationMessageFor(c => c.Password)
-    </div>
-
-    <div class="mb-3">
-        @Html.LabelFor(c => c.ConfirmPassword)
-        @Html.PasswordFor(c => c.ConfirmPassword, new { @class = "form-control" })
-        @Html.ValidationMessageFor(c => c.ConfirmPassword)
+        @Html.LabelFor(m => m.ConfirmPassword)
+        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
     </div>
 
     <button type="submit" class="btn btn-primary">Register</button>

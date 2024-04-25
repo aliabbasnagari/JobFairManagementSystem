@@ -1,15 +1,19 @@
-﻿using JobFairManagementSystem.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobFairManagementSystem.Data
+namespace JobFairManagementSystem.Data;
+
+public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
     {
-        public DbSet<Company> Companies { get; set; }
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
+        
     }
+
+    public DbSet<CompanyUser> Companies { get; set; }
+
+    public DbSet<CandidateUser> Students { get; set; }
+
+    public DbSet<AdminUser> Administrators { get; set; }
+
 }
