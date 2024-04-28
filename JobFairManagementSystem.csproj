@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\Shared\_CoverLayout.cshtml.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
@@ -17,12 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Company\Index.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Candidate\Login.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Candidate\Register.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Company\Home.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Company\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Company\Login.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\_CompanySideBar.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\_LoginPartial.cshtml" />
@@ -51,6 +52,19 @@
 
   <ItemGroup>
     <Folder Include="CustomAttributes\" />
+    <Folder Include="wwwroot\lib\bootstrap\dist\icons\font\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Candidate\Register.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Candidate\Login.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Views\Shared\_CoverLayout.cshtml.css" />
   </ItemGroup>
 
 </Project>

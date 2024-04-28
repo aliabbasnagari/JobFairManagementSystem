@@ -55,6 +55,11 @@ namespace JobFairManagementSystem.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -243,6 +248,11 @@ namespace JobFairManagementSystem.Migrations
                 {
                     b.HasBaseType("JobFairManagementSystem.Data.ApplicationUser");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("Bio")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -255,11 +265,15 @@ namespace JobFairManagementSystem.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
+                    b.Property<string>("ConfirmPassword")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Degree")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
@@ -269,6 +283,11 @@ namespace JobFairManagementSystem.Migrations
 
                     b.Property<DateTime>("GraduationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Skills")
                         .HasColumnType("nvarchar(max)");
@@ -298,10 +317,11 @@ namespace JobFairManagementSystem.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.ToTable("AspNetUsers", t =>
+                        {
+                            t.Property("Address")
+                                .HasColumnName("CompanyUser_Address");
+                        });
 
                     b.HasDiscriminator().HasValue("CompanyUser");
                 });

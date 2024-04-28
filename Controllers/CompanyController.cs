@@ -33,7 +33,7 @@ public class CompanyController : Controller
         return View("Login");
     }
 
-    [Authorize(Roles = "Company")]
+    [Authorize(Roles = UserRoles.CompanyRole)]
     [Verified]
     public async Task<IActionResult> HomeAsync()
     {
@@ -70,7 +70,7 @@ public class CompanyController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(Company model)
+    public async Task<IActionResult> RegisterAsync(Company model)
     {
         Debug.WriteLine("DEBUG:::::Register");
         if (ModelState.IsValid)
@@ -81,7 +81,6 @@ public class CompanyController : Controller
                 var user = new CompanyUser()
                 {
                     Name = model.Name,
-                    UserName = model.Name,
                     Address = model.Address,
                     Email = model.Email,
                     IsVerified = false

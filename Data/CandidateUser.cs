@@ -1,20 +1,34 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace JobFairManagementSystem.Data
 {
     public class CandidateUser : ApplicationUser
     {
         [Required]
+        [StringLength(255)]
+        public string Address { get; set; }
+
+        [Required]
+        [StringLength(255)]
+        public string Password { get; set; }
+
+        [Required]
+        [StringLength(255)]
+        [Compare("Password")]
+        public string ConfirmPassword { get; set; }
+
+        [Required]
         [StringLength(15)]
-        public string? CNIC { get; set; }
+        public string CNIC { get; set; }
 
         [Required]
         [StringLength(6)]
-        public string? Gender { get; set; }  
+        public string Gender { get; set; }  
 
         public DateTime DateOfBirth { get; set; }
 
-        public string Degree { get; set; }
+        public string? Degree { get; set; }
 
         public DateTime GraduationDate { get; set; }
 

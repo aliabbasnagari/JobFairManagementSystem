@@ -4,11 +4,6 @@
 # Project specific
 node_modules/*
 
-# These are needed, however, they're generated so don't need/want to track
-css/app.css.map
-css/app.min.css
-js/app.min.js
-
 # User-specific files
 *.suo
 *.user

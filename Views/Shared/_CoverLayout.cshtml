@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        (() => {
+            'use strict'
+
+            const getStoredTheme = () => localStorage.getItem('theme')
+            const setStoredTheme = theme => localStorage.setItem('theme', theme)
+
+            const getPreferredTheme = () => {
+                const storedTheme = getStoredTheme()
+                if (storedTheme) {
+                    return storedTheme
+                }
+
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+            }
+
+            const setTheme = theme => {
+                if (theme === 'auto') {
+                    document.documentElement.setAttribute('data-bs-theme', (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
+                } else {
+                    document.documentElement.setAttribute('data-bs-theme', theme)
+                }
+            }
+
+            setTheme(getPreferredTheme())
+
+            const showActiveTheme = (theme, focus = false) => {
+                const themeSwitcher = document.querySelector('#bd-theme')
+
+                if (!themeSwitcher) {
+                    return
+                }
+
+                const themeSwitcherText = document.querySelector('#bd-theme-text')
+                const activeThemeIcon = document.querySelector('.theme-icon-active i')
+                const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+                const svgOfActiveBtn = btnToActive.querySelector('i').getAttribute('data-icon')
+
+                document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+                    element.classList.remove('active')
+                    element.setAttribute('aria-pressed', 'false')
+                })
+
+                btnToActive.classList.add('active')
+                btnToActive.setAttribute('aria-pressed', 'true')
+                activeThemeIcon.setAttribute('class', 'bi me-2 ' + svgOfActiveBtn)
+                const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
+                themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
+
+                if (focus) {
+                    themeSwitcher.focus()
+                }
+            }
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                const storedTheme = getStoredTheme()
+                if (storedTheme !== 'light' && storedTheme !== 'dark') {
+                    setTheme(getPreferredTheme())
+                }
+            })
+
+            window.addEventListener('DOMContentLoaded', () => {
+                showActiveTheme(getPreferredTheme())
+
+                document.querySelectorAll('[data-bs-theme-value]')
+                    .forEach(toggle => {
+                        toggle.addEventListener('click', () => {
+                            const theme = toggle.getAttribute('data-bs-theme-value')
+                            setStoredTheme(theme)
+                            setTheme(theme)
+                            showActiveTheme(theme, true)
+                        })
+                    })
+            })
+        })()
+
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - JobFairManagementSystem</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/icons/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/JobFairManagementSystem.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <partial  name="_NavBar" />
+
+
+    <div class="container">
+        <main role="main" class="px-3">
+            @RenderBody()
+        </main>
+    </div>
+
+
+    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+        <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button"
+                aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
+
+            <div class="theme-icon-active"><i class="bi bi-circle-half me-2"></i></div>
+            <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                    <i class="bi bi-brightness-high me-2 opacity-50" data-icon="bi-brightness-high"></i> Light
+                    <i class="bi bi-check2 ms-auto d-none"></i>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                    <i class="bi bi-moon-stars-fill me-2 opacity-50" data-icon="bi-moon-stars-fill"></i> Dark
+                    <i class="bi bi-check2 ms-auto d-none"></i>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+                    <i class="bi bi-circle-half me-2 opacity-50" data-icon="bi-circle-half"></i> Auto
+                    <i class="bi bi-check2 ms-auto d-none"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

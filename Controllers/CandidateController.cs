@@ -1,0 +1,92 @@
+﻿using JobFairManagementSystem.CustomAttributes;
+using JobFairManagementSystem.Data;
+using JobFairManagementSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+
+namespace JobFairManagementSystem.Controllers;
+
+public partial class CandidateController : Controller
+{
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly ApplicationDbContext _context;
+
+    public CandidateController(UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        RoleManager<IdentityRole> roleManager,
+        ApplicationDbContext context)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _roleManager = roleManager;
+        _context = context;
+    }
+    // GET
+    public IActionResult Index()
+    {
+        if (_signInManager.IsSignedIn(User)) return RedirectToAction("Home");
+        return View("Login");
+    }
+
+    [Authorize(Roles = UserRoles.CandidateRole)]
+    [Verified]
+    public async Task<IActionResult> HomeAsync()
+    {
+        var model = await _userManager.GetUserAsync(User);
+        if (model == null) return View("Login");
+        return View((CandidateUser)model);
+    }
+
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RegisterAsync(Candidate model)
+    {
+        Debug.WriteLine("DEBUG:::::Register");
+        if (ModelState.IsValid)
+        {
+            var roleExists = await _roleManager.RoleExistsAsync(UserRoles.CandidateRole);
+            if (roleExists)
+            {
+                var user = new CandidateUser()
+                {
+                    Name = model.Name,
+                    UserName = Regex.Replace(model.Name + model.CNIC, "[^a-zA-Z]", ""),
+                    Email = model.Email,
+                    CNIC = model.CNIC,
+                    Address = model.Address,
+                    IsVerified = false
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // if (!roleExists)    await _roleManager.CreateAsync(new IdentityRole(UserRoles.CompanyRole));
+                    await _userManager.AddToRoleAsync(user, UserRoles.CandidateRole);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Home");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                    Debug.WriteLine("DEBUG:::::Register-" + error.Description);
+                }
+            }
+        }
+        return View("Register", model);
+    }
+}

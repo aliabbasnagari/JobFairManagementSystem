@@ -1,26 +1,76 @@
 ﻿@model Company
 @{
     ViewData["Title"] = "Home Page";
-    Layout = "_CompanySideBar";
+    Layout = "_CoverLayout";
 }
 
-<div class="text-center">
+<style>
+    .user-btn {
+        text-decoration: none;
+        color: #343a40;
+        border: 2px solid #00000010;
+    }
+
+        .user-btn:hover {
+            background-color: lightgray;
+        }
+</style>
+
+<div>
+    <div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5 rounded-5" tabindex="-1" role="dialog" id="modalTour">
+        <div class="text-center">
+            <h3>Welcome to CareerConnect</h3>
+            <h1><b>Job Fair'25</b></h1>
+        </div>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-body p-4">
+                    <h2 class="fw-bold mb-0">I'm a</h2>
+                    <ul class="d-grid gap-3 my-4 list-unstyled small">
+                        <a asp-controller="Company" asp-action="Login" class="d-flex gap-4 p-3 rounded-3 user-btn">
+                            <img src="~/img/company.png" width="60" height="60" alt="Company Icon" title="Company" class="img-small">
+                            <div>
+                                <h3 >Company</h3>
+                                <p class="text-secondary">Discover talent to fuel your company's growth</p>
+                            </div>
+                        </a>
+                        <a asp-controller="Candidate" asp-action="Login" class="d-flex gap-4 p-3 rounded-3 user-btn">
+                            <img src="~/img/candidate.png" width="60" height="60" alt="Candidate Icon" title="Candidate" class="img-small">
+                            <div>
+                                <h3 >Candidate</h3>
+                                <p class="text-secondary">Land your dream job, your career journey starts here</p>
+                            </div>
+                        </a>
+                        <a asp-controller="Company" asp-action="Login" class="d-flex gap-4 p-3 rounded-3 user-btn">
+                            <img src="~/img/admin.png" width="60" height="60" alt="Admin Icon" title="Admin" class="img-small">
+                            <div>
+                                <h3 >Administrator</h3>
+                                <p class="text-secondary">Seamlessly manage job fairs events</p>
+                            </div>
+                        </a>
+                    </ul>
+                    <button type="button" class="btn btn-lg btn-primary w-100" data-bs-dismiss="modal">I am already registered</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
     <h1 class="display-4">Welcome to CareerConnect</h1>
     <h1>Job Fair'25</h1>
 
 
-    <div>
+    <div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalTour">
         <h3>I'm a</h3>
         <div class="row g-3">
             <div class="col-4">
                 <a asp-controller="Company" asp-action="Index" class="btn btn-primary w-100 h-100">Company</a>
             </div>
             <div class="col-4">
-                <a asp-controller="Company" asp-action="Index" class="btn btn-primary w-100 h-100">Student</a>
+                <a asp-controller="Candidate" asp-action="Register" class="btn btn-primary w-100 h-100">Candidate</a>
             </div>
             <div class="col-4">
                 <a asp-controller="Company" asp-action="Index" class="btn btn-primary w-100 h-100">Administrator</a>
             </div>
         </div>
-    </div>
+    </div>-->
 </div>
