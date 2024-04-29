@@ -25,7 +25,7 @@ public class CompanyController : Controller
         _signInManager = signInManager;
         _roleManager = roleManager;
         _context = context;
-   
+
     }
 
 
@@ -119,19 +119,32 @@ public class CompanyController : Controller
 
     public async Task<IActionResult> CreateSchedule()
     {
-
+        var user = await _userManager.GetUserAsync(User);
+        _context.InterviewSchedules.Include(i => i.Slots);
+        var sch = _context.Companies
+            .Include(c => c.InterviewSchedule)
+            .ThenInclude(isch => isch.Slots) // Eager loading of Slots
+            .Single(c => c.Id == user.Id)
+            .InterviewSchedule;
+        
         CreateScheduleVM model = new CreateScheduleVM()
         {
-            InterviewSchedule = new InterviewSchedule()
-            {
-                Slots = new List<Slot>() 
-            }
+            InterviewSchedule = sch
         };
         return View(model);
     }
 
-    public IActionResult AddSlot(CreateScheduleVM model)
+    public async Task<IActionResult> AddSlot(CreateScheduleVM model)
     {
+        var user = await _userManager.GetUserAsync(User);
+        _context.InterviewSchedules.Include(i => i.Slots);
+        var sch = _context.Companies
+            .Include(c => c.InterviewSchedule)
+            .ThenInclude(isch => isch.Slots) // Eager loading of Slots
+            .Single(c => c.Id == user.Id)
+            .InterviewSchedule;
+        sch.Slots.Add(model.Slot);
+        await _context.SaveChangesAsync();
         return RedirectToAction("CreateSchedule", model);
     }
 }

@@ -15,16 +15,11 @@ public class Slot
     public DateTime EndTime { get; set; }
 
     public string Title { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
     public bool Reserved { get; set; }
 
-    [ForeignKey("Candidate")]
-    public string CandidateId { get; set; }
+    public virtual CandidateUser? Candidate { get; set; }
 
-    public virtual CandidateUser Candidate { get; set; }
-
-    [Timestamp]
-    public byte[] Timestamp { get; set; }
 
     public bool IsOverlapping(Slot otherSlot)
     {

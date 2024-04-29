@@ -23,14 +23,9 @@ namespace JobFairManagementSystem.Controllers
 
         public async Task<IActionResult> IndexAsync()
         {
-            await _signInManager.SignOutAsync();
             if (_signInManager.IsSignedIn(User))
             {
                 var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
-
-                }
                 if (user != null)
                 {
                     var userRoles = await _userManager.GetRolesAsync(user);
