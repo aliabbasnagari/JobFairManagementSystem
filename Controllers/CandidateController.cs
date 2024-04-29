@@ -34,6 +34,7 @@ public partial class CandidateController : Controller
         return View("Login");
     }
 
+
     [Authorize(Roles = UserRoles.CandidateRole)]
     [Verified]
     public async Task<IActionResult> HomeAsync()
@@ -65,10 +66,11 @@ public partial class CandidateController : Controller
                 var user = new CandidateUser()
                 {
                     Name = model.Name,
-                    UserName = Regex.Replace(model.Name + model.CNIC, "[^a-zA-Z]", ""),
                     Email = model.Email,
                     CNIC = model.CNIC,
                     Address = model.Address,
+                    Password = model.Password,
+                    Gender = model.Gender,
                     IsVerified = false
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);

@@ -12,7 +12,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
     public DbSet<CompanyUser> Companies { get; set; }
 
-    public DbSet<CandidateUser> Students { get; set; }
+    public DbSet<CandidateUser> Candidates { get; set; }
 
     public DbSet<AdminUser> Administrators { get; set; }
 

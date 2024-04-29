@@ -1,21 +1,21 @@
-﻿using JobFairManagementSystem.Data;
+﻿using AutoMapper;
+using JobFairManagementSystem.CustomAttributes;
+using JobFairManagementSystem.Data;
 using JobFairManagementSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using JobFairManagementSystem.CustomAttributes;
-using Microsoft.AspNetCore.Authorization;
-
 namespace JobFairManagementSystem.Controllers;
 
-public class CompanyController : Controller
+public class AdminController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ApplicationDbContext _context;
 
-    public CompanyController(UserManager<ApplicationUser> userManager,
+    public AdminController(UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager,
         ApplicationDbContext context)
@@ -29,17 +29,7 @@ public class CompanyController : Controller
     // GET
     public IActionResult Index()
     {
-        if (_signInManager.IsSignedIn(User)) return RedirectToAction("Home");
-        return View("Login");
-    }
-
-    [Authorize(Roles = UserRoles.CompanyRole)]
-    [Verified]
-    public async Task<IActionResult> HomeAsync()
-    {
-        var model = await _userManager.GetUserAsync(User);
-        if (model == null) return View("Login");
-        return View((CompanyUser)model);
+        return View();
     }
 
     public IActionResult Login()
@@ -47,36 +37,43 @@ public class CompanyController : Controller
         return View();
     }
 
+
+    [Authorize(Roles = UserRoles.AdminRole)]
+    [Verified]
+    public async Task<IActionResult> HomeAsync()
+    {
+        var model = await _userManager.GetUserAsync(User);
+        if (model == null) return View("Login");
+        return View((AdminUser)model);
+    }
+
     public IActionResult Register()
     {
         return View();
     }
 
-
     [HttpPost]
-    public async Task<IActionResult> RegisterAsync(Company model)
+    public async Task<IActionResult> RegisterAsync(Admin model)
     {
         Debug.WriteLine("DEBUG:::::Register");
         if (ModelState.IsValid)
         {
-            var roleExists = await _roleManager.RoleExistsAsync(UserRoles.CompanyRole);
+            var roleExists = await _roleManager.RoleExistsAsync(UserRoles.AdminRole);
             if (roleExists)
             {
-                var user = new CompanyUser()
+                var user = new AdminUser()
                 {
                     Name = model.Name,
-                    Address = model.Address,
                     Email = model.Email,
                     Password = model.Password,
-                    ContactEmail = model.Email,
-                    Description = model.Description,
+                    CNIC = model.CNIC,
+                    PhoneNumber = model.PhoneNumber,
                     IsVerified = false
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // if (!roleExists)    await _roleManager.CreateAsync(new IdentityRole(UserRoles.CompanyRole));
-                    await _userManager.AddToRoleAsync(user, UserRoles.CompanyRole);
+                    await _userManager.AddToRoleAsync(user, UserRoles.AdminRole);
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Home");
                 }
@@ -91,26 +88,24 @@ public class CompanyController : Controller
         return View("Register", model);
     }
 
-    public IActionResult UpdateAsync(string id)
+    public IActionResult VerifyCompanies()
     {
-        var companyDb = _context.Companies.Single(c => c.Id == id);
-        return View(companyDb);
+        var companies = _context.Companies.ToList();
+        return View(companies);
     }
 
-    [HttpPost]
-    public IActionResult UpdateAsync(CompanyUser model)
+    public IActionResult VerifyCandidates()
     {
-        if (ModelState.IsValid)
-        {
-            var companyDb = _context.Companies.Single(c => c.Id == model.Id);
-            companyDb.Description = model.Description;
-            companyDb.Address = model.Address;
-            companyDb.Email = model.Email;
-            companyDb.ContactEmail = model.Email;
-            companyDb.Name = model.Name;
-            companyDb.Password = model.Password;
-            _context.SaveChanges();
-        }
-        return View(model);
+        var candidates = _context.Candidates.ToList();
+        return View(candidates);
+    }
+
+    public IActionResult VerifyUser(string id, string actionName)
+    {
+        Debug.WriteLine(id);
+        var user = _context.Users.Single(u => u.Id == id);
+        user.IsVerified = !user.IsVerified;
+        _context.SaveChanges();
+        return RedirectToAction(actionName);
     }
 }

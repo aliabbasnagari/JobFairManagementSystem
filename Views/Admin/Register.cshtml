@@ -1,13 +1,13 @@
-﻿@model Company
+﻿@model Admin
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Register";
     Layout = "_Layout";
 }
 
-<h2>Company Registration</h2>
+<h2>Register</h2>
 
-@using (Html.BeginForm("Register", "Company"))
+@using (Html.BeginForm("Register", "Admin"))
 {
     @Html.ValidationSummary()
     <div class="mb-3">
@@ -21,16 +21,14 @@
     </div>
 
     <div class="mb-3">
-        @Html.LabelFor(m => m.Address)
-        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+        @Html.LabelFor(m => m.CNIC)
+        @Html.TextBoxFor(m => m.CNIC, new { @class = "form-control" })
     </div>
 
     <div class="mb-3">
-        @Html.LabelFor(m => m.Description)
-        @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+        @Html.LabelFor(m => m.PhoneNumber)
+        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
     </div>
-
-
 
     <div class="mb-3">
         @Html.LabelFor(m => m.Password)

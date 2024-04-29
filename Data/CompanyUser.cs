@@ -14,6 +14,11 @@ namespace JobFairManagementSystem.Data
 
         [Required]
         [StringLength(255)]
+        public string Venue { get; set; }
+
+
+        [Required]
+        [StringLength(255)]
         [EmailAddress]
         public string ContactEmail { get; set; }
     }

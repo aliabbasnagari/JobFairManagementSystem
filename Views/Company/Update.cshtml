@@ -1,13 +1,13 @@
-﻿@model Company
+﻿@model JobFairManagementSystem.Data.CompanyUser  
 
 @{
-    ViewBag.Title = "title";
-    Layout = "_Layout";
+    ViewBag.Title = "Update";
+    Layout = "_SideBarLayout";
 }
 
-<h2>Company Registration</h2>
+<h2>Update Company</h2>
 
-@using (Html.BeginForm("Register", "Company"))
+@using (Html.BeginForm("Update", "Company"))
 {
     @Html.ValidationSummary()
     <div class="mb-3">
@@ -30,8 +30,6 @@
         @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
     </div>
 
-
-
     <div class="mb-3">
         @Html.LabelFor(m => m.Password)
         @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
@@ -42,5 +40,5 @@
         @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
     </div>
 
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="submit" class="btn btn-primary">Update Profile</button>
 }

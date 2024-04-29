@@ -9,14 +9,6 @@ namespace JobFairManagementSystem.Data
         [StringLength(255)]
         public string Address { get; set; }
 
-        [Required]
-        [StringLength(255)]
-        public string Password { get; set; }
-
-        [Required]
-        [StringLength(255)]
-        [Compare("Password")]
-        public string ConfirmPassword { get; set; }
 
         [Required]
         [StringLength(15)]
