@@ -13,7 +13,7 @@
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
-            <th scope="col">Description</th>
+            <th scope="col">Bio</th>
             <th scope="col">Status</th>
             <th scope="col">Action</th>
         </tr>
@@ -27,7 +27,7 @@
                 <td>@candidate.Bio</td>
                 <td class="@(candidate.IsVerified ? "text-success" : "text-warning")">@(candidate.IsVerified ? "Verified" : "Pending Verification")</td>
                 <td>
-                    <a asp-action="VerifyUser" asp-route-id="@candidate.Id" asp-route-actionName="VerifyCandidates" class="btn @(candidate.IsVerified ? "btn-danger" : "btn-success")">@(candidate.IsVerified ? "Revoke" : "Verify")</a>
+                    <a asp-action="VerifyUser" asp-route-id="@candidate.Id" asp-route-actionName="VerifyCandidates" class="btn @(candidate.IsVerified ? "btn-warning" : "btn-success")">@(candidate.IsVerified ? "Revoke" : "Verify")</a>
                     <a class="btn btn-info">Edit</a>
                     <a class="btn btn-danger">Delete</a>
                 </td>

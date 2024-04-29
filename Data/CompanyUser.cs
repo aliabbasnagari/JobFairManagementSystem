@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using JobFairManagementSystem.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace JobFairManagementSystem.Data
 {
@@ -21,5 +22,7 @@ namespace JobFairManagementSystem.Data
         [StringLength(255)]
         [EmailAddress]
         public string ContactEmail { get; set; }
+
+        public InterviewSchedule? InterviewSchedule { get; set; }
     }
 }

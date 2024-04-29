@@ -21,8 +21,24 @@ namespace JobFairManagementSystem.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
+            await _signInManager.SignOutAsync();
+            if (_signInManager.IsSignedIn(User))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+
+                }
+                if (user != null)
+                {
+                    var userRoles = await _userManager.GetRolesAsync(user);
+                    if (userRoles.Contains(UserRoles.AdminRole)) return RedirectToAction("Home", "Admin");
+                    if (userRoles.Contains(UserRoles.CompanyRole)) return RedirectToAction("Home", "Company");
+                    if (userRoles.Contains(UserRoles.CandidateRole)) return RedirectToAction("Home", "Candidate");
+                }
+            }
             return View();
         }
 

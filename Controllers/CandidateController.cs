@@ -91,4 +91,34 @@ public partial class CandidateController : Controller
         }
         return View("Register", model);
     }
+
+    public IActionResult UpdateAsync(string id)
+    {
+        var candidateDb = _context.Candidates.Single(c => c.Id == id);
+        return View(candidateDb);
+    }
+
+    [HttpPost]
+    public IActionResult UpdateAsync(CandidateUser model)
+    {
+        if (ModelState.IsValid)
+        {
+            var candidateDb = _context.Candidates.Single(c => c.Id == model.Id);
+            candidateDb.Email = model.Email;
+            candidateDb.Name = model.Name;
+            candidateDb.Bio = model.Bio;
+            candidateDb.Address = model.Address;
+            candidateDb.CGPA = model.CGPA;
+            candidateDb.CNIC = model.CNIC;
+            candidateDb.Degree = model.Degree;
+            candidateDb.DateOfBirth = model.DateOfBirth;
+            candidateDb.Gender = model.Gender;
+            candidateDb.GraduationDate = model.GraduationDate;
+            candidateDb.Skills = model.Skills;
+            candidateDb.SocialLinks = model.SocialLinks;
+            candidateDb.Password = model.Password;
+            _context.SaveChanges();
+        }
+        return View(model);
+    }
 }

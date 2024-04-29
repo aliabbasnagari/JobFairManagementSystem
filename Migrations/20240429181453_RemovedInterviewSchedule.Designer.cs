@@ -4,6 +4,7 @@ using JobFairManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobFairManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240429181453_RemovedInterviewSchedule")]
+    partial class RemovedInterviewSchedule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,69 +110,6 @@ namespace JobFairManagementSystem.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("JobFairManagementSystem.Models.InterviewSchedule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("InterviewSchedules");
-                });
-
-            modelBuilder.Entity("JobFairManagementSystem.Models.Slot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CandidateId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("InterviewScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Reserved")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CandidateId");
-
-                    b.HasIndex("InterviewScheduleId");
-
-                    b.ToTable("Slot");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -386,15 +326,10 @@ namespace JobFairManagementSystem.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("InterviewScheduleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Venue")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
-
-                    b.HasIndex("InterviewScheduleId");
 
                     b.ToTable("AspNetUsers", t =>
                         {
@@ -403,21 +338,6 @@ namespace JobFairManagementSystem.Migrations
                         });
 
                     b.HasDiscriminator().HasValue("CompanyUser");
-                });
-
-            modelBuilder.Entity("JobFairManagementSystem.Models.Slot", b =>
-                {
-                    b.HasOne("JobFairManagementSystem.Data.CandidateUser", "Candidate")
-                        .WithMany()
-                        .HasForeignKey("CandidateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JobFairManagementSystem.Models.InterviewSchedule", null)
-                        .WithMany("Slots")
-                        .HasForeignKey("InterviewScheduleId");
-
-                    b.Navigation("Candidate");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -469,20 +389,6 @@ namespace JobFairManagementSystem.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("JobFairManagementSystem.Data.CompanyUser", b =>
-                {
-                    b.HasOne("JobFairManagementSystem.Models.InterviewSchedule", "InterviewSchedule")
-                        .WithMany()
-                        .HasForeignKey("InterviewScheduleId");
-
-                    b.Navigation("InterviewSchedule");
-                });
-
-            modelBuilder.Entity("JobFairManagementSystem.Models.InterviewSchedule", b =>
-                {
-                    b.Navigation("Slots");
                 });
 #pragma warning restore 612, 618
         }

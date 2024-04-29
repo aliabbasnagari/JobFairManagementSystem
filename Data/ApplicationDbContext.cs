@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using JobFairManagementSystem.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobFairManagementSystem.Data;
@@ -15,5 +16,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     public DbSet<CandidateUser> Candidates { get; set; }
 
     public DbSet<AdminUser> Administrators { get; set; }
+
+    public DbSet<InterviewSchedule> InterviewSchedules { get; set; }
 
 }

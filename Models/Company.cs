@@ -4,7 +4,7 @@ namespace JobFairManagementSystem.Models
 {
     public class Company
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [Required]
         [StringLength(255)]
@@ -33,10 +33,12 @@ namespace JobFairManagementSystem.Models
 
 
         [StringLength(255)]
-        public string ContactEmail { get; set; }
+        public string? ContactEmail { get; set; }
 
 
         [StringLength(255)]
-        public string Venue { get; set; }
+        public string? Venue { get; set; }
+
+        public InterviewSchedule? InterviewSchedule { get; set; }
     }
 }

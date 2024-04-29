@@ -4,6 +4,7 @@ using JobFairManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobFairManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240429180238_AddedInterviewSchedule")]
+    partial class AddedInterviewSchedule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,7 +125,7 @@ namespace JobFairManagementSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InterviewSchedules");
+                    b.ToTable("InterviewSchedule");
                 });
 
             modelBuilder.Entity("JobFairManagementSystem.Models.Slot", b =>
@@ -386,7 +389,7 @@ namespace JobFairManagementSystem.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("InterviewScheduleId")
+                    b.Property<int>("InterviewScheduleId")
                         .HasColumnType("int");
 
                     b.Property<string>("Venue")
@@ -475,7 +478,9 @@ namespace JobFairManagementSystem.Migrations
                 {
                     b.HasOne("JobFairManagementSystem.Models.InterviewSchedule", "InterviewSchedule")
                         .WithMany()
-                        .HasForeignKey("InterviewScheduleId");
+                        .HasForeignKey("InterviewScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("InterviewSchedule");
                 });

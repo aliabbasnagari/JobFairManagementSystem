@@ -1,0 +1,38 @@
+﻿@using Microsoft.IdentityModel.Tokens
+@model List<JobFairManagementSystem.Data.CompanyUser>
+
+@{
+    ViewBag.Title = "Add Venues";
+    Layout = "_SideBarLayout";
+    ViewBag.active = 4;
+}
+
+<h2>Assign Venues</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Venue</th>
+            <th scope="col">Assign Venue</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var company in Model)
+        {
+            <tr>
+                <td>@company.Name</td>
+                <td>@company.Email</td>
+                <td class="@(company.Venue.IsNullOrEmpty() ? "text-warning": "text-success")">@(company.Venue.IsNullOrEmpty() ? "Not Assigned Yet" : company.Venue)</td>
+                <td class="d-flex">
+                    <form class="d-flex" method="post" asp-action="AssignVenue">
+                        <input type="hidden" name="id" value="@company.Id" />
+                        <input type="text" name="venue" value="@company.Venue" class="form-control me-2" />
+                        <button type="submit" class="btn btn-primary">Assign</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

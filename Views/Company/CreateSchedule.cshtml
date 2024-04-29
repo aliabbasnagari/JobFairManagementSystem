@@ -1,0 +1,28 @@
+﻿@model CreateScheduleVM
+
+@{
+    ViewBag.Title = "Create Schedule";
+    Layout = "_Layout";
+}
+
+
+@using (Html.BeginForm("AddSlot", "Company"))
+{
+    @Html.TextBoxFor(m => m.Slot.StartTime, new { Type = "time" })
+    @Html.TextBoxFor(m => m.Slot.EndTime, new { Type = "time" })
+
+    @Html.TextBoxFor(m => m.Slot.Title, new { }) 
+    @Html.TextBoxFor(m => m.Slot.Description, new { })
+    <input type="datetime"/>
+    <button type="submit">Add Slot</button>
+}
+
+@if (Model.InterviewSchedule?.Slots != null)
+{
+    <ul>
+        @foreach (var slot in Model.InterviewSchedule.Slots)
+        {
+            <li>@slot.ToString()</li>
+        }
+    </ul>
+}

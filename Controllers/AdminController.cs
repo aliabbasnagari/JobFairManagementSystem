@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
+
 namespace JobFairManagementSystem.Controllers;
 
 public class AdminController : Controller
@@ -108,4 +110,20 @@ public class AdminController : Controller
         _context.SaveChanges();
         return RedirectToAction(actionName);
     }
+
+    public IActionResult AssignVenues()
+    {
+        var companies = _context.Companies.ToList().FindAll(c => c.IsVerified);
+        return View(companies);
+    }
+
+    [HttpPost]
+    public IActionResult AssignVenue(string id, string venue)
+    {
+        var company = _context.Companies.Single(c => c.Id == id);
+        company.Venue = venue;
+         _context.SaveChanges();
+        return RedirectToAction("AssignVenues");
+    }
+
 }

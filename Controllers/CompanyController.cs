@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using JobFairManagementSystem.CustomAttributes;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobFairManagementSystem.Controllers;
 
@@ -24,7 +25,9 @@ public class CompanyController : Controller
         _signInManager = signInManager;
         _roleManager = roleManager;
         _context = context;
+   
     }
+
 
     // GET
     public IActionResult Index()
@@ -112,5 +115,23 @@ public class CompanyController : Controller
             _context.SaveChanges();
         }
         return View(model);
+    }
+
+    public async Task<IActionResult> CreateSchedule()
+    {
+
+        CreateScheduleVM model = new CreateScheduleVM()
+        {
+            InterviewSchedule = new InterviewSchedule()
+            {
+                Slots = new List<Slot>() 
+            }
+        };
+        return View(model);
+    }
+
+    public IActionResult AddSlot(CreateScheduleVM model)
+    {
+        return RedirectToAction("CreateSchedule", model);
     }
 }
