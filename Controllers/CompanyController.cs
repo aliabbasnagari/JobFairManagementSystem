@@ -73,6 +73,7 @@ public class CompanyController : Controller
                     Password = model.Password,
                     ContactEmail = model.Email,
                     Description = model.Description,
+                    InterviewSchedule = new InterviewSchedule { Date = DateTime.Now },
                     IsVerified = false
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -126,7 +127,7 @@ public class CompanyController : Controller
             .ThenInclude(isch => isch.Slots) // Eager loading of Slots
             .Single(c => c.Id == user.Id)
             .InterviewSchedule;
-        
+
         CreateScheduleVM model = new CreateScheduleVM()
         {
             InterviewSchedule = sch
@@ -143,6 +144,7 @@ public class CompanyController : Controller
             .ThenInclude(isch => isch.Slots) // Eager loading of Slots
             .Single(c => c.Id == user.Id)
             .InterviewSchedule;
+
         sch.Slots.Add(model.Slot);
         await _context.SaveChangesAsync();
         return RedirectToAction("CreateSchedule", model);
