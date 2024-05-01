@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobFairManagementSystem.Controllers;
 
@@ -120,5 +121,28 @@ public partial class CandidateController : Controller
             _context.SaveChanges();
         }
         return View(model);
+    }
+
+    public IActionResult ListCompanies()
+    {
+        var model = _context.Companies.Include(c => c.InterviewSchedule).ThenInclude(i => i.Slots).ToList();
+        return View(model);
+    }
+
+    public async Task<IActionResult> ReserveSlot(string id, int slotId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        var company = _context.Companies.Include(c => c.InterviewSchedule).ThenInclude(i => i.Slots)
+            .ThenInclude(slot => slot.Candidate).Single(c => c.Id == id);
+
+        var slot = company.InterviewSchedule.Slots.Find(s => s.Id == slotId);
+
+        slot.Reserved = true;
+        slot.Candidate = (CandidateUser)user;
+        slot.CandidateId = user.Id;
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction("ListCompanies");
     }
 }

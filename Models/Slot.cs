@@ -1,4 +1,5 @@
-﻿using JobFairManagementSystem.Data;
+﻿using System.ComponentModel;
+using JobFairManagementSystem.Data;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,11 +15,18 @@ public class Slot
     [Required]
     public DateTime EndTime { get; set; }
 
+    [Required]
+    [StringLength(255)]
     public string Title { get; set; }
+
+    [StringLength(255)]
     public string? Description { get; set; }
     public bool Reserved { get; set; }
+    public bool InterviewConducted { get; set; }
 
     public virtual CandidateUser? Candidate { get; set; }
+
+    public string? CandidateId { get; set; }
 
 
     public bool IsOverlapping(Slot otherSlot)

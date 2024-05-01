@@ -11,7 +11,7 @@
 
 @using (Html.BeginForm("AddSlot", "Company"))
 {
-
+    @Html.ValidationSummary()
     <div class="d-flex mb-3">
         <div class="d-block me-2">
             @Html.LabelFor(m => m.Slot.StartTime)
@@ -27,11 +27,13 @@
             @Html.TextBoxFor(m => m.Slot.Title, new { @class = "form-control" })
         </div>
         <div class="d-block w-100 mx-2">
-
             @Html.LabelFor(m => m.Slot.Description)
             @Html.TextBoxFor(m => m.Slot.Description, new { @class = "form-control" })
         </div>
-        <button type="submit" class="btn btn-success">Add Slot</button>
+        <div class="d-block">
+            @Html.Label("","add slot", new { @class = "opacity-0" })
+            <button type="submit" class="btn btn-success">Add Slot</button>
+        </div>
     </div>
 }
 
@@ -42,6 +44,7 @@
         <thead>
             <tr>
                 <th style="width: 150px;" scope="col">Slot</th>
+                <th scope="col">Title</th>
                 <th scope="col">Status</th>
                 <th scope="col">Candidate</th>
                 <th scope="col">Action</th>
@@ -52,9 +55,10 @@
             {
                 <tr>
                     <td>@slot.StartTime.ToString("HH:mm") - @slot.EndTime.ToString("HH:mm")</td>
+                    <td>@slot.Title</td>
                     <td>@(slot.Reserved ? "Reserved" : "Free")</td>
                     <td>@(slot.Reserved ? slot.Candidate.Email : "N/A")</td>
-                    <td><a asp-controller="Company" asp-action="DeleteSlot" asp-route-id="@slot.Id">Delete</a></td>
+                    <td><a asp-controller="Company" asp-action="DeleteSlot" asp-route-id="@slot.Id" class="btn btn-danger">Delete</a></td>
                 </tr>
             }
         </tbody>
