@@ -121,10 +121,10 @@ public class CompanyController : Controller
     public async Task<IActionResult> CreateSchedule()
     {
         var user = await _userManager.GetUserAsync(User);
-        _context.InterviewSchedules.Include(i => i.Slots);
         var sch = _context.Companies
             .Include(c => c.InterviewSchedule)
-            .ThenInclude(isch => isch.Slots) // Eager loading of Slots
+            .ThenInclude(i => i.Slots) // Eager loading of Slots
+            .ThenInclude(s => s.Candidate)
             .Single(c => c.Id == user.Id)
             .InterviewSchedule;
 
@@ -148,7 +148,7 @@ public class CompanyController : Controller
             _context.InterviewSchedules.Include(i => i.Slots);
             var sch = _context.Companies
                 .Include(c => c.InterviewSchedule)
-                .ThenInclude(isch => isch.Slots) // Eager loading of Slots
+                .ThenInclude(i => i.Slots) // Eager loading of Slots
                 .Single(c => c.Id == user.Id)
                 .InterviewSchedule;
 
@@ -165,11 +165,13 @@ public class CompanyController : Controller
         _context.InterviewSchedules.Include(i => i.Slots);
         var sch = _context.Companies
             .Include(c => c.InterviewSchedule)
-            .ThenInclude(isch => isch.Slots) // Eager loading of Slots
+            .ThenInclude(i => i.Slots) // Eager loading of Slots
             .Single(c => c.Id == user.Id)
             .InterviewSchedule;
 
+        if (sch == null) return RedirectToAction("CreateSchedule");
         var slotToDelete = sch.Slots.FirstOrDefault(slot => slot.Id == id);
+        if (slotToDelete == null) return RedirectToAction("CreateSchedule");
         sch.Slots.Remove(slotToDelete);
         await _context.SaveChangesAsync();
         return RedirectToAction("CreateSchedule");

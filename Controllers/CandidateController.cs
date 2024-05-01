@@ -125,23 +125,28 @@ public partial class CandidateController : Controller
 
     public IActionResult ListCompanies()
     {
-        var model = _context.Companies.Include(c => c.InterviewSchedule).ThenInclude(i => i.Slots).ToList();
-        return View(model);
+        var companies = _context.Companies
+            .Include(c => c.InterviewSchedule)
+            .ThenInclude(i => i.Slots)
+            .ThenInclude(s => s.Candidate)
+            .ToList().FindAll(c => c.IsVerified);
+
+        return View(companies);
     }
 
-    public async Task<IActionResult> ReserveSlot(string id, int slotId)
+    public async Task<IActionResult> ReserveSlot(string cid, int slotId)
     {
         var user = await _userManager.GetUserAsync(User);
 
-        var company = _context.Companies.Include(c => c.InterviewSchedule).ThenInclude(i => i.Slots)
-            .ThenInclude(slot => slot.Candidate).Single(c => c.Id == id);
+        var company = _context.Companies
+            .Include(c => c.InterviewSchedule)
+            .ThenInclude(i => i.Slots)
+            .ThenInclude(slot => slot.Candidate).Single(c => c.Id == cid);
 
         var slot = company.InterviewSchedule.Slots.Find(s => s.Id == slotId);
-
         slot.Reserved = true;
         slot.Candidate = (CandidateUser)user;
         slot.CandidateId = user.Id;
-
         await _context.SaveChangesAsync();
         return RedirectToAction("ListCompanies");
     }
