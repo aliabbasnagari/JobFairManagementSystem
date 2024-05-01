@@ -2,6 +2,15 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User);
+    string? role = null;
+    if (user != null)
+    {
+        var roles = await UserManager.GetRolesAsync(user);
+        role = roles[0];
+    }
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,127 +25,26 @@
 </head>
 <body>
     <div class="d-flex flex-nowrap">
-
-        <div class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style="width: 280px; height: 100vh;">
+        <div class="d-flex flex-column p-3 bg-secondary position-fixed min-vh-100" style="width: 280px;">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                <img src="~/img/Asset 4.png" height="60px" />
+                <img src="~/img/Asset 4.png" height="60px" alt="Logo" />
             </a>
             <hr>
-            @{
-                var user = await UserManager.GetUserAsync(User);
-                string role = null;
-                if (user != null)
-                {
-                    var roles = await UserManager.GetRolesAsync(user);
-                    role = roles[0];
-                }
-            }
-
-            @if (role == UserRoles.AdminRole)
+            @switch (role)
             {
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a asp-controller="Admin" asp-action="Home" class="nav-link @(ViewBag.active == 0 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-house me-2"></i>Home
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Admin" asp-action="Home" class="nav-link @(ViewBag.active == 1 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-speedometer2 me-2"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Admin" asp-action="VerifyCompanies" class="nav-link @(ViewBag.active == 2 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-building-check me-2"></i>Verify Companies
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Admin" asp-action="VerifyCandidates" class="nav-link @(ViewBag.active == 3 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-person-check me-2"></i>Verify Candidates
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Admin" asp-action="AssignVenues" class="nav-link @(ViewBag.active == 4 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-pin-map me-2"></i>Assign Venues
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-body-emphasis">
-                            <i class="bi bi-bell me-2"></i>Open House Invitations
-                        </a>
-                    </li>
-                </ul>
-            }
-            else if (role == UserRoles.CompanyRole)
-            {
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a asp-controller="Company" asp-action="Home" class="nav-link @(ViewBag.active == 0 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-house me-2"></i>Home
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Company" asp-action="Home" class="nav-link @(ViewBag.active == 1 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-speedometer2 me-2"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Company" asp-action="Update" asp-route-id="@user?.Id" class="nav-link @(ViewBag.active == 2 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-building-check me-2"></i>Update Profile
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Company" asp-action="CreateSchedule" asp-route-id="@user?.Id" class="nav-link @(ViewBag.active == 2 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-building-check me-2"></i>Create Interview Schedule
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Company" asp-action="VerifyCandidates" class="nav-link @(ViewBag.active == 3 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-person-check me-2"></i>Verify Candidates
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-body-emphasis">
-                            <i class="bi bi-bell me-2"></i>Open House Invitations
-                        </a>
-                    </li>
-                </ul>
-            }
-            else if (role == UserRoles.CandidateRole)
-            {
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a asp-controller="Candidate" asp-action="Home" class="nav-link @(ViewBag.active == 0 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-house me-2"></i>Home
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Candidate" asp-action="Home" class="nav-link @(ViewBag.active == 1 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-speedometer2 me-2"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Candidate" asp-action="Update" asp-route-id="@user?.Id" class="nav-link @(ViewBag.active == 2 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-building-check me-2"></i>Update Profile
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Candidate" asp-action="VerifyCandidates" class="nav-link @(ViewBag.active == 3 ? "active": "link-body-emphasis")">
-                            <i class="bi bi-person-check me-2"></i>Verify Candidates
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-body-emphasis">
-                            <i class="bi bi-bell me-2"></i>Open House Invitations
-                        </a>
-                    </li>
-                </ul>
+                case UserRoles.AdminRole:
+                    <partial name="_AdminOptPartial" />
+                    break;
+                case UserRoles.CompanyRole:
+                    <partial name="_CompanyOptPartial" model="user" />
+                    break;
+                case UserRoles.CandidateRole:
+                    <partial name="_CandidateOptPartial" model="user" />
+                    break;
             }
 
             <hr>
+
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
@@ -150,13 +58,14 @@
             </div>
         </div>
 
-        <div class="container py-4 bg-info">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
+        <div class="py-4 w-100 bg-info" style="margin-left: 280px;">
+            <div class="container">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
         </div>
     </div>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

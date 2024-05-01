@@ -1,28 +1,168 @@
-﻿@model CreateScheduleVM
+﻿@using System.Diagnostics
+@model CreateScheduleVM
 
 @{
     ViewBag.Title = "Create Schedule";
-    Layout = "_Layout";
+    Layout = "_SideBarLayout";
+    ViewBag.active = 3;
+    Debug.WriteLine(Model.Slot.StartTime);
 }
 
 
 @using (Html.BeginForm("AddSlot", "Company"))
 {
-    @Html.TextBoxFor(m => m.Slot.StartTime, new { Type = "time" })
-    @Html.TextBoxFor(m => m.Slot.EndTime, new { Type = "time" })
 
-    @Html.TextBoxFor(m => m.Slot.Title, new { }) 
-    @Html.TextBoxFor(m => m.Slot.Description, new { })
-    <input type="datetime"/>
-    <button type="submit">Add Slot</button>
+    <div class="d-flex mb-3">
+        <div class="d-block me-2">
+            @Html.LabelFor(m => m.Slot.StartTime)
+            @Html.TextBoxFor(m => m.Slot.StartTime, new { @class = "form-control", Type = "time" })
+        </div>
+
+        <div class="d-block me-2">
+            @Html.LabelFor(m => m.Slot.EndTime)
+            @Html.TextBoxFor(m => m.Slot.EndTime, new { @class = "form-control", Type = "time" })
+        </div>
+        <div class="d-block">
+            @Html.LabelFor(m => m.Slot.Title)
+            @Html.TextBoxFor(m => m.Slot.Title, new { @class = "form-control" })
+        </div>
+        <div class="d-block w-100 mx-2">
+
+            @Html.LabelFor(m => m.Slot.Description)
+            @Html.TextBoxFor(m => m.Slot.Description, new { @class = "form-control" })
+        </div>
+        <button type="submit" class="btn btn-success">Add Slot</button>
+    </div>
 }
 
-@if (Model.InterviewSchedule?.Slots != null)
-{
-    <ul>
-        @foreach (var slot in Model.InterviewSchedule.Slots)
-        {
-            <li>@slot.ToString()</li>
+<table class="table table-bordered">
+    @if (Model.InterviewSchedule?.Slots != null)
+    {
+
+        <thead>
+            <tr>
+                <th style="width: 150px;" scope="col">Slot</th>
+                <th scope="col">Status</th>
+                <th scope="col">Candidate</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var slot in Model.InterviewSchedule.Slots)
+            {
+                <tr>
+                    <td>@slot.StartTime.ToString("HH:mm") - @slot.EndTime.ToString("HH:mm")</td>
+                    <td>@(slot.Reserved ? "Reserved" : "Free")</td>
+                    <td>@(slot.Reserved ? slot.Candidate.Email : "N/A")</td>
+                    <td><a asp-controller="Company" asp-action="DeleteSlot" asp-route-id="@slot.Id">Delete</a></td>
+                </tr>
+            }
+        </tbody>
+    }
+</table>
+
+<div>
+    <canvas id="myChart" height="100"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script>
+
+    var slots = @Html.Raw(Json.Serialize(Model.InterviewSchedule?.Slots));
+
+    var data_slots = slots.map(slot => ({ name: slot['title'], start: new Date(slot["startTime"]), end: new Date(slot["endTime"]) }));
+
+    const labels = data_slots.map(slot => slot.name);
+    const data = data_slots.map(slot => {
+        const duration = (slot.end - slot.start) / (1000 * 60);
+        const starts = new Date(slot.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        const ends = new Date(slot.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        const stamp = starts + " - " + ends
+        return {
+            x: [slot.start, slot.end],
+            y: duration,
+            se: stamp
+        };
+    });
+
+
+    const bgColorBase = [
+        '54, 162, 235',
+        '255, 99, 132',
+        '255, 206, 86',
+        '75, 192, 192',
+        '153, 102, 255'
+    ];
+
+    const backgroundColors = slots.map((slot, index) => {
+
+        console.log(slot, bgColorBase[index]);
+        if (slot['reserved']) {
+            return `rgba(${bgColorBase[index]}, 0.8)`;
+        } else {
+            return `rgba(${bgColorBase[index]}, 0.5)`;
         }
-    </ul>
+    });
+
+
+    // Create Chart
+    const ctx = document.getElementById('myChart');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Interview Slots',
+                data: data,
+                backgroundColor: backgroundColors,
+                borderColor: 'rgba(0, 0, 0, 0.6)',
+                borderWidth: 1,
+                borderSkipped: false,
+                borderRadius: 10
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        minUnit: 'minute',
+                        unit: 'minute', displayFormats: {
+                            minute: 'h:mm a' // Format for displaying hours and minutes
+                        },
+                    }, grid: {
+                        innerHeight: 30
+                    },
+                    ticks: {
+                        stepSize: 15
+                    },
+                    min: new Date('2024-05-01T08:00:00'),
+                    max: new Date('2024-05-01T18:00:00')
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return context.raw.se + ' [' + context.raw.y + ' min]';
+                        },
+                        title: function (context) {
+                            return context[0].raw.name;
+                        }
+                    }
+                }, legend: {
+                    display: false
+                }
+            }, datasets: {
+                barThickness: 10 // Set the height of the bars
+            }
+        }
+    });
+</script>
+@section Scripts {
+
+
 }

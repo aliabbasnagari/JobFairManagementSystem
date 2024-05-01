@@ -34,7 +34,6 @@
     <_ContentIncludedByDefault Remove="Views\Company\Home.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Company\Login.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Company\Update.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Shared\_CompanySideBar.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\_LoginPartial.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\_NavBar.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\_SideBarLayout.cshtml" />
@@ -54,10 +53,6 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Shared\_LoginPartial.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Shared\_CompanySideBar.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

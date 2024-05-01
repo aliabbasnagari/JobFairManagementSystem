@@ -130,6 +130,11 @@ public class CompanyController : Controller
 
         CreateScheduleVM model = new CreateScheduleVM()
         {
+            Slot = new Slot
+            {
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now
+            },
             InterviewSchedule = sch
         };
         return View(model);
@@ -148,5 +153,21 @@ public class CompanyController : Controller
         sch.Slots.Add(model.Slot);
         await _context.SaveChangesAsync();
         return RedirectToAction("CreateSchedule", model);
+    }
+
+    public async Task<IActionResult> DeleteSlot(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        _context.InterviewSchedules.Include(i => i.Slots);
+        var sch = _context.Companies
+            .Include(c => c.InterviewSchedule)
+            .ThenInclude(isch => isch.Slots) // Eager loading of Slots
+            .Single(c => c.Id == user.Id)
+            .InterviewSchedule;
+
+        var slotToDelete = sch.Slots.FirstOrDefault(slot => slot.Id == id);
+        sch.Slots.Remove(slotToDelete);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("CreateSchedule");
     }
 }

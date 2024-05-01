@@ -28,6 +28,6 @@ public class Slot
 
     public override string ToString()
     {
-        return StartTime.ToString("MM/dd/yyyy") + " - " + EndTime.ToString("MM/dd/yyyy");
+        return StartTime.ToString("HH:mm:ss") + " - " + EndTime.ToString("HH:mm:ss");
     }
 }

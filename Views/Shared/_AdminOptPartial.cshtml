@@ -1,0 +1,33 @@
+﻿<ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item">
+        <a asp-controller="Admin" asp-action="Home" class="nav-link @(ViewBag.active == 0 ? "active": "link-body-emphasis")">
+            <i class="bi bi-house me-2"></i>Home
+        </a>
+    </li>
+    <li>
+        <a asp-controller="Admin" asp-action="Home" class="nav-link @(ViewBag.active == 1 ? "active": "link-body-emphasis")">
+            <i class="bi bi-speedometer2 me-2"></i>
+            Dashboard
+        </a>
+    </li>
+    <li>
+        <a asp-controller="Admin" asp-action="VerifyCompanies" class="nav-link @(ViewBag.active == 2 ? "active": "link-body-emphasis")">
+            <i class="bi bi-building-check me-2"></i>Verify Companies
+        </a>
+    </li>
+    <li>
+        <a asp-controller="Admin" asp-action="VerifyCandidates" class="nav-link @(ViewBag.active == 3 ? "active": "link-body-emphasis")">
+            <i class="bi bi-person-check me-2"></i>Verify Candidates
+        </a>
+    </li>
+    <li>
+        <a asp-controller="Admin" asp-action="AssignVenues" class="nav-link @(ViewBag.active == 4 ? "active": "link-body-emphasis")">
+            <i class="bi bi-pin-map me-2"></i>Assign Venues
+        </a>
+    </li>
+    <li>
+        <a href="#" class="nav-link link-body-emphasis">
+            <i class="bi bi-bell me-2"></i>Open House Invitations
+        </a>
+    </li>
+</ul>
