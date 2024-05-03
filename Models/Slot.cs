@@ -2,6 +2,7 @@
 using JobFairManagementSystem.Data;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using JobFairManagementSystem.CustomAttributes;
 
 namespace JobFairManagementSystem.Models;
 
@@ -10,9 +11,11 @@ public class Slot
     public int Id { get; set; }
 
     [Required]
+    [TimeCheck]
     public DateTime StartTime { get; set; }
 
     [Required]
+    [TimeCheck]
     public DateTime EndTime { get; set; }
 
     [Required]
@@ -36,6 +39,6 @@ public class Slot
 
     public override string ToString()
     {
-        return StartTime.ToString("HH:mm:ss") + " - " + EndTime.ToString("HH:mm:ss");
+        return StartTime.ToString("hh:mm tt") + " - " + EndTime.ToString("hh:mm tt");
     }
 }

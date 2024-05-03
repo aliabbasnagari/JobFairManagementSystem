@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using RestSharp;
+using RestSharp.Authenticators;
 
 namespace JobFairManagementSystem.Controllers;
 
@@ -34,7 +37,6 @@ public partial class CandidateController : Controller
         if (_signInManager.IsSignedIn(User)) return RedirectToAction("Home");
         return View("Login");
     }
-
 
     [Authorize(Roles = UserRoles.CandidateRole)]
     [Verified]
@@ -134,9 +136,10 @@ public partial class CandidateController : Controller
         return View(companies);
     }
 
-    public async Task<IActionResult> ReserveSlot(string cid, int slotId)
+    public IActionResult ReserveSlot(string cid, int slotId)
     {
-        var user = await _userManager.GetUserAsync(User);
+        var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = _context.Candidates.ToList().Find(c => c.Id == uid);
 
         var company = _context.Companies
             .Include(c => c.InterviewSchedule)
@@ -145,9 +148,28 @@ public partial class CandidateController : Controller
 
         var slot = company.InterviewSchedule.Slots.Find(s => s.Id == slotId);
         slot.Reserved = true;
-        slot.Candidate = (CandidateUser)user;
-        slot.CandidateId = user.Id;
-        await _context.SaveChangesAsync();
+        slot.Candidate = user;
+        slot.CandidateId = uid;
+        _context.SaveChanges();
         return RedirectToAction("ListCompanies");
+    }
+
+    public IActionResult FreeSlot(int sId)
+    {
+        var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = _context.Candidates.ToList().Find(c => c.Id == uid);
+        var slot = _context.Slots.Include(s => s.Candidate).Single(s => s.Id == sId);
+        slot.Reserved = false;
+        slot.Candidate = null;
+        slot.CandidateId = null;
+        _context.SaveChanges();
+        return RedirectToAction("ListCompanies");
+    }
+
+    public IActionResult ShowNotifications()
+    {
+        var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = _context.Candidates.Include(c => c.Notifications).Single(c => c.Id == uid);
+        return View(user.Notifications);
     }
 }

@@ -4,6 +4,7 @@ using JobFairManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobFairManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240503072050_AddedSlotTable")]
+    partial class AddedSlotTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,44 +126,6 @@ namespace JobFairManagementSystem.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InterviewSchedules");
-                });
-
-            modelBuilder.Entity("JobFairManagementSystem.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("ReceiverId")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar(36)");
-
-                    b.Property<string>("SenderId")
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar(36)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("JobFairManagementSystem.Models.Slot", b =>
@@ -440,13 +405,6 @@ namespace JobFairManagementSystem.Migrations
                     b.HasDiscriminator().HasValue("CompanyUser");
                 });
 
-            modelBuilder.Entity("JobFairManagementSystem.Models.Notification", b =>
-                {
-                    b.HasOne("JobFairManagementSystem.Data.ApplicationUser", null)
-                        .WithMany("Notifications")
-                        .HasForeignKey("ApplicationUserId");
-                });
-
             modelBuilder.Entity("JobFairManagementSystem.Models.Slot", b =>
                 {
                     b.HasOne("JobFairManagementSystem.Data.CandidateUser", "Candidate")
@@ -518,11 +476,6 @@ namespace JobFairManagementSystem.Migrations
                         .HasForeignKey("InterviewScheduleId");
 
                     b.Navigation("InterviewSchedule");
-                });
-
-            modelBuilder.Entity("JobFairManagementSystem.Data.ApplicationUser", b =>
-                {
-                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("JobFairManagementSystem.Models.InterviewSchedule", b =>

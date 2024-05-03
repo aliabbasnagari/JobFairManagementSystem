@@ -5,7 +5,6 @@
     ViewBag.Title = "Create Schedule";
     Layout = "_SideBarLayout";
     ViewBag.active = 3;
-    Debug.WriteLine(Model.Slot.StartTime);
 }
 
 
@@ -15,7 +14,7 @@
     <div class="d-flex mb-3">
         <div class="d-block me-2">
             @Html.LabelFor(m => m.Slot.StartTime)
-            @Html.TextBoxFor(m => m.Slot.StartTime, new { @class = "form-control", Type = "time" })
+            @Html.TextBoxFor(m => m.Slot.StartTime, new { @class = "form-control", Type = "time"})
         </div>
 
         <div class="d-block me-2">
@@ -24,14 +23,14 @@
         </div>
         <div class="d-block">
             @Html.LabelFor(m => m.Slot.Title)
-            @Html.TextBoxFor(m => m.Slot.Title, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Slot.Title, new { @class = "form-control", value = "New" })
         </div>
         <div class="d-block w-100 mx-2">
             @Html.LabelFor(m => m.Slot.Description)
             @Html.TextBoxFor(m => m.Slot.Description, new { @class = "form-control" })
         </div>
         <div class="d-block">
-            @Html.Label("","add slot", new { @class = "opacity-0" })
+            @Html.Label("", "add slot", new { @class = "opacity-0" })
             <button type="submit" class="btn btn-success">Add Slot</button>
         </div>
     </div>
@@ -90,6 +89,17 @@
         };
     });
 
+    var minTime = new Date();
+    minTime.setHours(8);
+    minTime.setMinutes(0);
+    minTime.setSeconds(0);
+    minTime.setMilliseconds(0);
+
+    var maxTime = new Date();
+    maxTime.setHours(18);
+    maxTime.setMinutes(0);
+    maxTime.setSeconds(0);
+    maxTime.setMilliseconds(0);
 
     const bgColorBase = [
         '54, 162, 235',
@@ -143,8 +153,8 @@
                     ticks: {
                         stepSize: 15
                     },
-                    min: new Date('2024-05-01T08:00:00'),
-                    max: new Date('2024-05-01T18:00:00')
+                    min: minTime,
+                    max: maxTime
                 }
             },
             plugins: {

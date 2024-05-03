@@ -7,6 +7,6 @@ public class CreateScheduleVM
     public InterviewSchedule? InterviewSchedule { get; set; }
     
     [Required]
-    public Slot? Slot { get; set; }
+    public Slot Slot { get; set; }
 
 }

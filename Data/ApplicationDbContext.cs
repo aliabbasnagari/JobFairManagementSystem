@@ -19,5 +19,8 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
     public DbSet<InterviewSchedule> InterviewSchedules { get; set; }
 
+    public DbSet<Slot> Slots { get; set; }
+
+
 
 }

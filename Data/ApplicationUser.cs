@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using JobFairManagementSystem.Models;
 
 namespace JobFairManagementSystem.Data;
 
@@ -21,6 +22,8 @@ public class ApplicationUser : IdentityUser
     public string ConfirmPassword { get; set; }
 
     public bool IsVerified { get; set; }
+
+    public List<Notification> Notifications { get; set; }
 
     public ApplicationUser()
     {

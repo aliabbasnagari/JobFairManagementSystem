@@ -1,7 +1,4 @@
-﻿@using System.Diagnostics
-@using System.Security.Claims
-@using JobFairManagementSystem.Data
-@using Microsoft.AspNetCore.Identity
+﻿@using System.Security.Claims
 @using Microsoft.IdentityModel.Tokens
 @model System.Collections.Generic.List<JobFairManagementSystem.Data.CompanyUser>
 
@@ -9,6 +6,7 @@
     ViewBag.Title = "List Companies";
     Layout = "_SideBarLayout";
     var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    ViewBag.active = 3;
 }
 
 <div class="accordion" id="companyAccordion">
@@ -49,7 +47,12 @@
                     }
                     else
                     {
-                        <p>You Already Reserved Your Interview Slot <i>@applied_slot.ToString()</i> </p>
+                        <form asp-action="FreeSlot" class="d-flex">
+                            <p>You Already Reserved Your Interview Slot</p>
+                            <i class="align-content-center">@applied_slot.ToString()</i>
+                            <input type="hidden" name="sId" id="sId" value="@applied_slot.Id" />
+                            <button type="submit" class="btn btn-warning ms-3">Free Slot</button>
+                        </form>
                     }
                     <h3>Venue: @(company.Venue.IsNullOrEmpty() ? "not assigned yet" : company.Venue) </h3>
                     <h5>@company.Description</h5>
