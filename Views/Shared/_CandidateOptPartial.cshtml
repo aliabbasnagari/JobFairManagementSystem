@@ -23,18 +23,10 @@
         </a>
     </li>
     <li>
-        <a asp-controller="Candidate" asp-action="ShowNotifications" class="nav-link @(ViewBag.active == 3 ? "active": "link-body-emphasis")">
-            <i class="bi bi-person-check me-2"></i>Notifications 
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                @Model.Notifications?.FindAll(n => !n.IsRead).Count
-                <span class="visually-hidden">unread messages</span>
-            </span>
-
-        </a>
-    </li>
-    <li>
-        <a href="#" class="nav-link link-body-emphasis">
-            <i class="bi bi-bell me-2"></i>Open House Invitations
+        <a asp-controller="Candidate" asp-action="ShowNotifications" class="nav-link @(ViewBag.active == 4 ? "active" : "link-body-emphasis")">
+            <i class="bi bi-bell me-2"></i>Notifications
+            
+            <span class="badge text-bg-danger rounded-pill ms-2">@Model.Notifications.FindAll(n => !n.IsRead).Count</span>
         </a>
     </li>
 </ul>

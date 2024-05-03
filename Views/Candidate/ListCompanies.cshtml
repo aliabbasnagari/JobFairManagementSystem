@@ -48,10 +48,10 @@
                     else
                     {
                         <form asp-action="FreeSlot" class="d-flex">
-                            <p>You Already Reserved Your Interview Slot</p>
-                            <i class="align-content-center">@applied_slot.ToString()</i>
                             <input type="hidden" name="sId" id="sId" value="@applied_slot.Id" />
-                            <button type="submit" class="btn btn-warning ms-3">Free Slot</button>
+                            <p>You Already Reserved Your Interview Slot</p>
+                            <i class="align-content-center mx-3">@applied_slot.ToString()</i>
+                            <button type="submit" class="btn btn-warning">Free Slot</button>
                         </form>
                     }
                     <h3>Venue: @(company.Venue.IsNullOrEmpty() ? "not assigned yet" : company.Venue) </h3>

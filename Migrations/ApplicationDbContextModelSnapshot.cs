@@ -160,7 +160,7 @@ namespace JobFairManagementSystem.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Notification");
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("JobFairManagementSystem.Models.Slot", b =>

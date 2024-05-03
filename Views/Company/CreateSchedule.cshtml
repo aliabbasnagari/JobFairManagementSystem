@@ -14,7 +14,7 @@
     <div class="d-flex mb-3">
         <div class="d-block me-2">
             @Html.LabelFor(m => m.Slot.StartTime)
-            @Html.TextBoxFor(m => m.Slot.StartTime, new { @class = "form-control", Type = "time"})
+            @Html.TextBoxFor(m => m.Slot.StartTime, new { @class = "form-control", Type = "time" })
         </div>
 
         <div class="d-block me-2">
@@ -42,7 +42,7 @@
 
         <thead>
             <tr>
-                <th style="width: 150px;" scope="col">Slot</th>
+                <th style="width: 200px;" scope="col">Slot</th>
                 <th scope="col">Title</th>
                 <th scope="col">Status</th>
                 <th scope="col">Candidate</th>
@@ -53,11 +53,37 @@
             @foreach (var slot in Model.InterviewSchedule.Slots)
             {
                 <tr>
-                    <td>@slot.StartTime.ToString("HH:mm") - @slot.EndTime.ToString("HH:mm")</td>
+                    <td>@slot.StartTime.ToString("hh:mm tt") - @slot.EndTime.ToString("hh:mm tt")</td>
                     <td>@slot.Title</td>
                     <td>@(slot.Reserved ? "Reserved" : "Free")</td>
-                    <td>@(slot.Reserved ? slot.Candidate.Email : "N/A")</td>
-                    <td><a asp-controller="Company" asp-action="DeleteSlot" asp-route-id="@slot.Id" class="btn btn-danger">Delete</a></td>
+                    <td>
+                        @if (slot.Reserved)
+                        {
+                            <div class="d-flex">
+                                <p>@slot.Candidate?.Email</p>
+                                <div class="ms-2 dropdown">
+                                    <a class="bi bi-caret-down-fill" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                                    <ul class="dropdown-menu">
+                                        <a asp-action="ShowCandidateProfile" class="dropdown-item">Show Profile</a>
+                                        <a asp-controller="Company" asp-action="SendInterviewRemainder" asp-route-rid="@slot.CandidateId" asp-route-slot="@slot" asp-route-id="@slot.Id" class="dropdown-item">Send Remainder</a>
+                                        <a asp-action="InterviewTaken" class="dropdown-item">Mark Done</a>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <p>N/A</p>
+                        }
+                    </td>
+                    <td>
+                        <div class="ms-2 dropdown">
+                            <a class="bi bi-caret-down-fill" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                            <ul class="dropdown-menu">
+                                <a asp-controller="Company" asp-action="DeleteSlot" asp-route-id="@slot.Id" class="dropdown-item text-danger">Delete</a>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>

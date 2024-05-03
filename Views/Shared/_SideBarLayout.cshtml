@@ -1,10 +1,14 @@
-﻿@using JobFairManagementSystem.Data
+﻿@using System.Security.Claims
+@using JobFairManagementSystem.Data
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.EntityFrameworkCore
 @inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext Context;
 @{
-    var user = await UserManager.GetUserAsync(User);
-    string? role = null;
-    if (user != null) { role = (await UserManager.GetRolesAsync(user))[0]; }
+    var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var user = Context.Users.Include(u => u.Notifications).Single(u => u.Id == uid);
+    var role = (await UserManager.GetRolesAsync(user))[0];
 }
 
 <!DOCTYPE html>
@@ -28,7 +32,7 @@
             @switch (role)
             {
                 case UserRoles.AdminRole:
-                    <partial name="_AdminOptPartial" />
+                    <partial name="_AdminOptPartial" model="user" />
                     break;
                 case UserRoles.CompanyRole:
                     <partial name="_CompanyOptPartial" model="user" />

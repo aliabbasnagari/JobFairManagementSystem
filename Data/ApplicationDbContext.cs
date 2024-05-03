@@ -21,6 +21,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
     public DbSet<Slot> Slots { get; set; }
 
+    public DbSet<Notification> Notifications { get; set; }
 
 
 }

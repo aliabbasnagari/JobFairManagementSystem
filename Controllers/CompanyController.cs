@@ -162,4 +162,12 @@ public class CompanyController : Controller
         await _context.SaveChangesAsync();
         return RedirectToAction("CreateSchedule");
     }
+
+    public IActionResult SendInterviewRemainder(string rid, string slot)
+    {
+        var user = _context.Users.Include(u => u.Notifications).Single(u => u.Id == rid);
+        user.Notifications.Add(new Notification(User.Identity.Name, rid, "IMPORTANT! You have interview with us at " + slot));
+        _context.SaveChanges();
+        return RedirectToAction("CreateSchedule");
+    }
 }
