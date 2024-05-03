@@ -1,0 +1,31 @@
+﻿@using JobFairManagementSystem.Data
+@model Notification
+@inject ApplicationDbContext Context
+
+@{
+    ViewBag.Title = "Send Notification";
+    Layout = "_SideBarLayout";
+    List<ApplicationUser> options = [new ApplicationUser { Id = "ALL", Name = "Send To All" }, .. Context.Users.ToList().FindAll(u => u.Id != Model.SenderId)];
+}
+
+<h2>Send Notifications</h2>
+
+<div id="form_individual">
+    @using (Html.BeginForm("SendNotification", "Admin"))
+    {
+        <div class="mb-2">
+            @Html.LabelFor(m => m.ReceiverId)
+            @Html.DropDownListFor(m => m.ReceiverId,
+                     new SelectList(options, "Id", "Name"), "Select User", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ReceiverId)
+        </div>
+        <div class="mb-2">
+            @Html.LabelFor(m => m.Message)
+            @Html.TextAreaFor(m => m.Message, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Message)
+        </div>
+
+        @Html.HiddenFor(m => m.SenderId)
+        <button type="submit" class="btn btn-primary">Send</button>
+    }
+</div>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace JobFairManagementSystem.Controllers;
@@ -104,7 +105,6 @@ public class AdminController : Controller
 
     public IActionResult VerifyUser(string id, string actionName)
     {
-        Debug.WriteLine(id);
         var user = _context.Users.Single(u => u.Id == id);
         user.IsVerified = !user.IsVerified;
         _context.SaveChanges();
@@ -127,5 +127,41 @@ public class AdminController : Controller
     }
 
 
+    public IActionResult SendNotification()
+    {
+        Notification model = new Notification
+        {
+            ReceiverId = "ALL",
+            SenderId = User.Identity.Name
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    public IActionResult SendNotification(Notification model)
+    {
+        if (ModelState.IsValid)
+        {
+            if (model.ReceiverId.Equals("ALL"))
+            {
+                foreach (var user in _context.Users.Include(u => u.Notifications).ToList()
+                             .FindAll(u => u.Id != model.SenderId))
+                {
+                    user.Notifications.Add(new Notification(model.SenderId, user.Id, model.Message));
+                }
+            }
+            else
+            {
+                var user = _context.Users.Include(u => u.Notifications).ToList().Single(u => u.Id == model.ReceiverId);
+                user.Notifications.Add(new Notification(model.SenderId, user.Id, model.Message));
+            }
+
+            _context.SaveChanges();
+            return RedirectToAction("SendNotification");
+        }
+
+        model.ReceiverId = "ALL";
+        return View("SendNotification", model);
+    }
 
 }

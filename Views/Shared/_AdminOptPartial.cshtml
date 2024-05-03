@@ -33,6 +33,11 @@
         </a>
     </li>
     <li>
+        <a asp-controller="Admin" asp-action="SendNotification" class="nav-link @(ViewBag.active == 4 ? "active" : "link-body-emphasis")">
+            <i class="bi bi-bell me-2"></i>Send Notifications
+        </a>
+    </li>
+    <li>
         <a asp-controller="Candidate" asp-action="ShowNotifications" class="nav-link @(ViewBag.active == 4 ? "active" : "link-body-emphasis")">
             <i class="bi bi-bell me-2"></i>Notifications
 

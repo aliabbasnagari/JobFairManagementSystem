@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace JobFairManagementSystem.Models;
 
@@ -6,7 +7,7 @@ public class Notification
 {
     public int Id { get; set; }
 
-
+    [Required]
     [StringLength(255)]
     public string Message { get; set; }
 
@@ -14,7 +15,9 @@ public class Notification
 
     public bool IsRead { get; set; }
 
+    [Required]
     [StringLength(36)]
+    [DisplayName("Receiver")]
     public string ReceiverId { get; set; }
 
 

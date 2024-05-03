@@ -28,6 +28,7 @@
     <_ContentIncludedByDefault Remove="Views\Admin\AssignVenues.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Admin\Login.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Admin\Register.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Admin\SendNotification.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Admin\VerifyCompanies.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Candidate\Login.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Candidate\Register.cshtml" />
@@ -103,6 +104,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Admin\AssignVenues.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Admin\SendNotification.cshtml" />
   </ItemGroup>
 
 </Project>
