@@ -1,24 +1,28 @@
-﻿@model System.Collections.Generic.List<JobFairManagementSystem.Models.Notification>
+﻿@using System.Diagnostics
+@model System.Collections.Generic.List<JobFairManagementSystem.Models.Notification>
 
 @{
     ViewBag.Title = "Notifications";
     Layout = "_SideBarLayout";
-}
+    ViewBag.active = 4;
 
-@foreach (var notification in Model)
+    List<Notification> notifications = [.. Model];
+    notifications.Reverse();
+
+}
+<h3>Notifications</h3>
+
+@foreach (var notification in notifications)
 {
-    <div aria-live="polite" aria-atomic="true" class="bg-body-secondary position-relative bd-example-toasts rounded-3">
-        <div class="toast-container p-3" id="toastPlacement">
-            <div class="toast">
-                <div class="toast-header">
-                    <img src="..." class="rounded me-2" alt="...">
-                    <strong class="me-auto">Bootstrap</strong>
-                    <small>@notification.CreatedAt.ToString("yy-MM-dd HH:mm")</small>
-                </div>
-                <div class="toast-body">
-                    @notification.Message
-                </div>
+    <div class="card shadow mb-4 @(notification.IsRead ? "text-bg-dark" : "")">
+        <div class="card-header d-flex">
+            <div class="flex-grow-1">
+                <a asp-action="MarkAsRead" asp-route-Id="@notification.Id" class="@(notification.IsRead ? "bi-envelope-open" : "bi-envelope")"></a>
             </div>
+            <small class="text-secondary">@notification.CreatedAt.ToString("yy-MM-dd hh:mm tt")</small>
+        </div>
+        <div class="card-body">
+            @notification.Message
         </div>
     </div>
 }

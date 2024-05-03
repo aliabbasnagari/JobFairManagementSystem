@@ -169,7 +169,15 @@ public partial class CandidateController : Controller
     public IActionResult ShowNotifications()
     {
         var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = _context.Candidates.Include(c => c.Notifications).Single(c => c.Id == uid);
+        var user = _context.Users.Include(c => c.Notifications).Single(c => c.Id == uid);
         return View(user.Notifications);
+    }
+
+    public IActionResult MarkAsRead(int Id)
+    {
+        var notification = _context.Notifications.Single(n => n.Id == Id);
+        notification.IsRead = true;
+        _context.SaveChanges();
+        return RedirectToAction("ShowNotifications");
     }
 }
