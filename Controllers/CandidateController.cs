@@ -40,11 +40,10 @@ public partial class CandidateController : Controller
 
     [Authorize(Roles = UserRoles.CandidateRole)]
     [Verified]
-    public async Task<IActionResult> HomeAsync()
+    public IActionResult Home()
     {
-        var model = await _userManager.GetUserAsync(User);
-        if (model == null) return View("Login");
-        return View((CandidateUser)model);
+        var model = _context.Candidates.Include(c => c.Project).Single(c => c.Id == User.Identity.Name);
+       return View(model);
     }
 
     public IActionResult Login()
@@ -74,6 +73,7 @@ public partial class CandidateController : Controller
                     Address = model.Address,
                     Password = model.Password,
                     Gender = model.Gender,
+                    ProjectSchedule = new Schedule { Date = DateTime.Now },
                     IsVerified = false
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -130,7 +130,7 @@ public partial class CandidateController : Controller
         var companies = _context.Companies
             .Include(c => c.InterviewSchedule)
             .ThenInclude(i => i.Slots)
-            .ThenInclude(s => s.Candidate)
+            .ThenInclude(s => s.User)
             .ToList().FindAll(c => c.IsVerified);
 
         return View(companies);
@@ -144,12 +144,12 @@ public partial class CandidateController : Controller
         var company = _context.Companies
             .Include(c => c.InterviewSchedule)
             .ThenInclude(i => i.Slots)
-            .ThenInclude(slot => slot.Candidate).Single(c => c.Id == cid);
+            .ThenInclude(slot => slot.User).Single(c => c.Id == cid);
 
         var slot = company.InterviewSchedule.Slots.Find(s => s.Id == slotId);
         slot.Reserved = true;
-        slot.Candidate = user;
-        slot.CandidateId = uid;
+        slot.User = user;
+        slot.UserId = uid;
         _context.SaveChanges();
         return RedirectToAction("ListCompanies");
     }
@@ -158,10 +158,10 @@ public partial class CandidateController : Controller
     {
         var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = _context.Candidates.ToList().Find(c => c.Id == uid);
-        var slot = _context.Slots.Include(s => s.Candidate).Single(s => s.Id == sId);
+        var slot = _context.Slots.Include(s => s.User).Single(s => s.Id == sId);
         slot.Reserved = false;
-        slot.Candidate = null;
-        slot.CandidateId = null;
+        slot.User = null;
+        slot.UserId = null;
         _context.SaveChanges();
         return RedirectToAction("ListCompanies");
     }
@@ -179,5 +179,86 @@ public partial class CandidateController : Controller
         notification.IsRead = true;
         _context.SaveChanges();
         return RedirectToAction("ShowNotifications");
+    }
+
+    public IActionResult AddSkill(string Skill)
+    {
+        var user = _context.Candidates.Single(c => c.Id == User.Identity.Name);
+        user.Skills ??= [];
+        user.Skills.Add(Skill);
+        _context.SaveChanges();
+        return RedirectToAction("Home");
+    }
+
+    public IActionResult AddSocialLink(string SLink)
+    {
+        var user = _context.Candidates.Single(c => c.Id == User.Identity.Name);
+        user.SocialLinks ??= [];
+        user.SocialLinks.Add(SLink);
+        _context.SaveChanges();
+        return RedirectToAction("Home");
+    }
+
+    public IActionResult UpdateProject(Project model)
+    {
+        var user = _context.Candidates.Include(c => c.Project).Single(c => c.Id == User.Identity.Name);
+        user.Project ??= new Project();
+        user.Project.Title = model.Title;
+        user.Project.Description = model.Description;
+        _context.SaveChanges();
+        return RedirectToAction("Home");
+    }
+
+    public async Task<IActionResult> CreateSchedule()
+    {
+        var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var sch = _context.Candidates
+            .Include(c => c.ProjectSchedule)
+            .ThenInclude(i => i.Slots) // Eager loading of Slots
+            .ThenInclude(s => s.User)
+            .Single(c => c.Id == uid)
+            .ProjectSchedule;
+
+        var model = new CreateScheduleVM()
+        {
+            Schedule = sch
+        };
+        return View(model);
+    }
+
+    public async Task<IActionResult> AddSlot(CreateScheduleVM model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            _context.ProjectSchedules.Include(i => i.Slots);
+
+            var sch = _context.Candidates
+                .Include(c => c.ProjectSchedule)
+                .ThenInclude(i => i.Slots) // Eager loading of Slots
+                .Single(c => c.Id == user.Id)
+                .ProjectSchedule;
+
+            sch.Slots.Add(model.Slot);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("CreateSchedule");
+        }
+        return View("CreateSchedule", model);
+    }
+
+    public async Task<IActionResult> DeleteSlot(int id)
+    {
+        var slotToDelete = _context.Slots.Include(s => s.User).Single(s => s.Id == id);
+        _context.Slots.Remove(slotToDelete);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("CreateSchedule");
+    }
+
+    public IActionResult SendInterviewRemainder(string rid, string slot)
+    {
+        var user = _context.Users.Include(u => u.Notifications).Single(u => u.Id == rid);
+        user.Notifications.Add(new Notification(User.Identity.Name, rid, "IMPORTANT! You have interview with us at " + slot));
+        _context.SaveChanges();
+        return RedirectToAction("CreateSchedule");
     }
 }

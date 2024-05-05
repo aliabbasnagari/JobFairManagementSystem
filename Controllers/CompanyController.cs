@@ -74,7 +74,7 @@ public class CompanyController : Controller
                     Password = model.Password,
                     ContactEmail = model.Email,
                     Description = model.Description,
-                    InterviewSchedule = new InterviewSchedule { Date = DateTime.Now },
+                    InterviewSchedule = new Schedule { Date = DateTime.Now },
                     IsVerified = false
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -125,13 +125,13 @@ public class CompanyController : Controller
         var sch = _context.Companies
             .Include(c => c.InterviewSchedule)
             .ThenInclude(i => i.Slots) // Eager loading of Slots
-            .ThenInclude(s => s.Candidate)
+            .ThenInclude(s => s.User)
             .Single(c => c.Id == uid)
             .InterviewSchedule;
 
         var model = new CreateScheduleVM()
         {
-            InterviewSchedule = sch
+            Schedule = sch
         };
         return View(model);
     }
@@ -157,7 +157,11 @@ public class CompanyController : Controller
 
     public async Task<IActionResult> DeleteSlot(int id)
     {
-        var slotToDelete = _context.Slots.Include(s => s.Candidate).Single(s => s.Id == id);
+        var slotToDelete = _context.Slots.Include(s => s.User).Single(s => s.Id == id);
+        if (slotToDelete.User != null)
+        {
+            _context.Notifications.Add(new Notification(User.Identity.Name, slotToDelete.User.Id, "The slot " + slotToDelete + " you reserved has been deleted!"));
+        }
         _context.Slots.Remove(slotToDelete);
         await _context.SaveChangesAsync();
         return RedirectToAction("CreateSchedule");
@@ -165,9 +169,82 @@ public class CompanyController : Controller
 
     public IActionResult SendInterviewRemainder(string rid, string slot)
     {
-        var user = _context.Users.Include(u => u.Notifications).Single(u => u.Id == rid);
-        user.Notifications.Add(new Notification(User.Identity.Name, rid, "IMPORTANT! You have interview with us at " + slot));
+        _context.Notifications.Add(new Notification(User.Identity.Name, rid, "IMPORTANT! You have interview with us at " + slot));
         _context.SaveChanges();
         return RedirectToAction("CreateSchedule");
+    }
+
+    public IActionResult ListProjects()
+    {
+        var candidates = _context.Candidates
+            .Include(candidateUser => candidateUser.Project)
+            .Include(c => c.ProjectSchedule)
+            .ThenInclude(p => p.Slots).ToList()
+            .FindAll(c => c.Project != null);
+        return View(candidates);
+    }
+
+    public IActionResult ReserveSlot(string cid, int slotId)
+    {
+        var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var company = _context.Companies.ToList().Find(c => c.Id == uid);
+
+        var candidate = _context.Candidates
+            .Include(c => c.ProjectSchedule)
+            .ThenInclude(p => p.Slots)
+            .ThenInclude(slot => slot.User).Single(c => c.Id == cid);
+
+
+        _context.Notifications.Add(new Notification(uid, candidate.Id, "Company " + company.Name + " reserved a slot to view your Project."));
+        var slot = candidate.ProjectSchedule.Slots.Find(s => s.Id == slotId);
+        slot.Reserved = true;
+        slot.User = company;
+        slot.UserId = uid;
+        _context.SaveChanges();
+        return RedirectToAction("ListProjects");
+    }
+
+    public IActionResult FreeSlot(int sId)
+    {
+        var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var company = _context.Companies.Single(c => c.Id == uid);
+        var slot = _context.Slots.Include(s => s.User).Single(s => s.Id == sId);
+        _context.Notifications.Add(new Notification(uid, slot.User.Id, "Company " + company.Name + " Freed their slot to view your Project."));
+        slot.Reserved = false;
+        slot.User = null;
+        slot.UserId = null;
+        _context.SaveChanges();
+        return RedirectToAction("ListProjects");
+    }
+
+    public IActionResult ShowFeedback()
+    {
+        return View();
+    }
+
+    public IActionResult GiveFeedback()
+    {
+        Feedback feedback = new Feedback
+        {
+            FromUserId = User.Identity.Name
+        };
+        return View(feedback);
+    }
+
+    [HttpPost]
+    public IActionResult GiveFeedback(Feedback model)
+    {
+        var toUser = _context.Users.Single(u => u.Id == model.ToUserId);
+        var fromUser = _context.Users.Single(u => u.Id == model.FromUserId);
+        _context.Feedbacks.Add(new Feedback
+        {
+            FromUser = (model.Anonymous) ? null : fromUser,
+            FromUserId = (model.Anonymous) ? null : model.FromUserId,
+            ToUserId = model.ToUserId,
+            ToUser = toUser,
+            Message = model.Message
+        });
+        _context.SaveChanges();
+        return RedirectToAction("GiveFeedback");
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using JobFairManagementSystem.Models;
 
 namespace JobFairManagementSystem.Data
 {
@@ -30,7 +31,11 @@ namespace JobFairManagementSystem.Data
 
         public List<string>? SocialLinks { get; set; }
 
+        public Project? Project { get; set; }
+
         [StringLength(500)]
         public string? Bio { get; set; }
+
+        public Schedule? ProjectSchedule { get; set; }
     }
 }

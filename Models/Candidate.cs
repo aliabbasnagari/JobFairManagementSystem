@@ -50,4 +50,6 @@ public class Candidate
 
     [StringLength(500)]
     public string? Bio { get; set; }
+
+    public Schedule? ProjectSchedule { get; set; }
 }

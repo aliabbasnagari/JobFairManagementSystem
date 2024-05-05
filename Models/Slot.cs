@@ -27,9 +27,9 @@ public class Slot
     public bool Reserved { get; set; }
     public bool InterviewConducted { get; set; }
 
-    public virtual CandidateUser? Candidate { get; set; }
+    public virtual ApplicationUser? User { get; set; }
 
-    public string? CandidateId { get; set; }
+    public string? UserId { get; set; }
 
 
     public bool IsOverlapping(Slot otherSlot)

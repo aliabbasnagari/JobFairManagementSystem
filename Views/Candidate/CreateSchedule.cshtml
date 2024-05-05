@@ -1,13 +1,14 @@
-﻿@using System.Diagnostics
-@model CreateScheduleVM
+﻿@model CreateScheduleVM
 
 @{
     ViewBag.Title = "Create Schedule";
     Layout = "_SideBarLayout";
-    ViewBag.active = 3;
+    ViewBag.active = 4;
 }
 
-@using (Html.BeginForm("AddSlot", "Company"))
+<h2>Create Schedule</h2>
+
+@using (Html.BeginForm("AddSlot", "Candidate"))
 {
     @Html.ValidationSummary()
     <div class="d-flex mb-3">
@@ -44,7 +45,7 @@
                 <th style="width: 200px;" scope="col">Slot</th>
                 <th scope="col">Title</th>
                 <th scope="col">Status</th>
-                <th scope="col">Candidate</th>
+                <th scope="col">Company</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -102,7 +103,7 @@
 
         var data_slots = slots.map(slot => ({
             name: slot['title'],
-            start: new Date(slot["startTime"]), 
+            start: new Date(slot["startTime"]),
             end: new Date(slot["endTime"]),
             username: slot["user"] ? slot["user"]["name"] : "Slot is Free",
             usermail: slot["user"] ? slot["user"]["email"] : "N/A"

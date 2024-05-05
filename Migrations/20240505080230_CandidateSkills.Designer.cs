@@ -4,6 +4,7 @@ using JobFairManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobFairManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240505080230_CandidateSkills")]
+    partial class CandidateSkills
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,7 +112,7 @@ namespace JobFairManagementSystem.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("JobFairManagementSystem.Models.Feedback", b =>
+            modelBuilder.Entity("JobFairManagementSystem.Models.InterviewSchedule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,25 +120,12 @@ namespace JobFairManagementSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("FromUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("ToUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FromUserId");
-
-                    b.HasIndex("ToUserId");
-
-                    b.ToTable("Feedbacks");
+                    b.ToTable("InterviewSchedules");
                 });
 
             modelBuilder.Entity("JobFairManagementSystem.Models.Notification", b =>
@@ -147,9 +137,7 @@ namespace JobFairManagementSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar(36)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -178,45 +166,6 @@ namespace JobFairManagementSystem.Migrations
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("JobFairManagementSystem.Models.Project", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Projects");
-                });
-
-            modelBuilder.Entity("JobFairManagementSystem.Models.Schedule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Schedule");
-                });
-
             modelBuilder.Entity("JobFairManagementSystem.Models.Slot", b =>
                 {
                     b.Property<int>("Id")
@@ -224,6 +173,9 @@ namespace JobFairManagementSystem.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CandidateId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -235,11 +187,11 @@ namespace JobFairManagementSystem.Migrations
                     b.Property<bool>("InterviewConducted")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("InterviewScheduleId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Reserved")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("ScheduleId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
@@ -249,14 +201,11 @@ namespace JobFairManagementSystem.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasIndex("CandidateId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("InterviewScheduleId");
 
                     b.ToTable("Slots");
                 });
@@ -441,21 +390,13 @@ namespace JobFairManagementSystem.Migrations
                     b.Property<DateTime>("GraduationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProjectScheduleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Skills")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SocialLinks")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("ProjectScheduleId");
 
                     b.ToTable("AspNetUsers", t =>
                         {
@@ -504,43 +445,24 @@ namespace JobFairManagementSystem.Migrations
                     b.HasDiscriminator().HasValue("CompanyUser");
                 });
 
-            modelBuilder.Entity("JobFairManagementSystem.Models.Feedback", b =>
-                {
-                    b.HasOne("JobFairManagementSystem.Data.ApplicationUser", "FromUser")
-                        .WithMany()
-                        .HasForeignKey("FromUserId");
-
-                    b.HasOne("JobFairManagementSystem.Data.ApplicationUser", "ToUser")
-                        .WithMany()
-                        .HasForeignKey("ToUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FromUser");
-
-                    b.Navigation("ToUser");
-                });
-
             modelBuilder.Entity("JobFairManagementSystem.Models.Notification", b =>
                 {
                     b.HasOne("JobFairManagementSystem.Data.ApplicationUser", null)
                         .WithMany("Notifications")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("JobFairManagementSystem.Models.Slot", b =>
                 {
-                    b.HasOne("JobFairManagementSystem.Models.Schedule", null)
-                        .WithMany("Slots")
-                        .HasForeignKey("ScheduleId");
-
-                    b.HasOne("JobFairManagementSystem.Data.ApplicationUser", "User")
+                    b.HasOne("JobFairManagementSystem.Data.CandidateUser", "Candidate")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("CandidateId");
 
-                    b.Navigation("User");
+                    b.HasOne("JobFairManagementSystem.Models.InterviewSchedule", null)
+                        .WithMany("Slots")
+                        .HasForeignKey("InterviewScheduleId");
+
+                    b.Navigation("Candidate");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -594,24 +516,9 @@ namespace JobFairManagementSystem.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("JobFairManagementSystem.Data.CandidateUser", b =>
-                {
-                    b.HasOne("JobFairManagementSystem.Models.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId");
-
-                    b.HasOne("JobFairManagementSystem.Models.Schedule", "ProjectSchedule")
-                        .WithMany()
-                        .HasForeignKey("ProjectScheduleId");
-
-                    b.Navigation("Project");
-
-                    b.Navigation("ProjectSchedule");
-                });
-
             modelBuilder.Entity("JobFairManagementSystem.Data.CompanyUser", b =>
                 {
-                    b.HasOne("JobFairManagementSystem.Models.Schedule", "InterviewSchedule")
+                    b.HasOne("JobFairManagementSystem.Models.InterviewSchedule", "InterviewSchedule")
                         .WithMany()
                         .HasForeignKey("InterviewScheduleId");
 
@@ -623,7 +530,7 @@ namespace JobFairManagementSystem.Migrations
                     b.Navigation("Notifications");
                 });
 
-            modelBuilder.Entity("JobFairManagementSystem.Models.Schedule", b =>
+            modelBuilder.Entity("JobFairManagementSystem.Models.InterviewSchedule", b =>
                 {
                     b.Navigation("Slots");
                 });

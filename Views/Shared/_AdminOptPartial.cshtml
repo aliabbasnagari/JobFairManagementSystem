@@ -7,12 +7,6 @@
         </a>
     </li>
     <li>
-        <a asp-controller="Admin" asp-action="Home" class="nav-link @(ViewBag.active == 1 ? "active": "link-body-emphasis")">
-            <i class="bi bi-speedometer2 me-2"></i>
-            Dashboard
-        </a>
-    </li>
-    <li>
         <a asp-controller="Admin" asp-action="VerifyCompanies" class="nav-link @(ViewBag.active == 2 ? "active": "link-body-emphasis")">
             <i class="bi bi-building-check me-2"></i>Verify Companies
         </a>
@@ -28,17 +22,27 @@
         </a>
     </li>
     <li>
-        <a href="#" class="nav-link link-body-emphasis">
-            <i class="bi bi-bell me-2"></i>Open House Invitations
+        <a asp-controller="Admin" asp-action="SendInvititation" class="nav-link @(ViewBag.active == 5 ? "active": "link-body-emphasis")">
+            <i class="bi bi-send me-2"></i>Open House Invitations
         </a>
     </li>
     <li>
-        <a asp-controller="Admin" asp-action="SendNotification" class="nav-link @(ViewBag.active == 4 ? "active" : "link-body-emphasis")">
+        <a asp-controller="Admin" asp-action="SendNotification" class="nav-link @(ViewBag.active == 6 ? "active" : "link-body-emphasis")">
             <i class="bi bi-bell me-2"></i>Send Notifications
         </a>
     </li>
     <li>
-        <a asp-controller="Candidate" asp-action="ShowNotifications" class="nav-link @(ViewBag.active == 4 ? "active" : "link-body-emphasis")">
+        <a asp-controller="Company" asp-action="ShowFeedback" class="nav-link @(ViewBag.active == 7 ? "active": "link-body-emphasis")">
+            <i class="bi bi-ui-checks me-2"></i>Show Our Feedback
+        </a>
+    </li>
+    <li>
+        <a asp-controller="Company" asp-action="GiveFeedback" class="nav-link @(ViewBag.active == 8 ? "active": "link-body-emphasis")">
+            <i class="bi bi-pencil-square me-2"></i>Give Feedback
+        </a>
+    </li>
+    <li>
+        <a asp-controller="Candidate" asp-action="ShowNotifications" class="nav-link @(ViewBag.active == 10 ? "active" : "link-body-emphasis")">
             <i class="bi bi-bell me-2"></i>Notifications
 
             <span class="badge text-bg-danger rounded-pill ms-2">@Model.Notifications.FindAll(n => !n.IsRead).Count</span>

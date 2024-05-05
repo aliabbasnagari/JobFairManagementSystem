@@ -131,7 +131,7 @@ public class AdminController : Controller
     {
         Notification model = new Notification
         {
-            ReceiverId = "ALL",
+            ApplicationUserId = "ALL",
             SenderId = User.Identity.Name
         };
         return View(model);
@@ -142,7 +142,7 @@ public class AdminController : Controller
     {
         if (ModelState.IsValid)
         {
-            if (model.ReceiverId.Equals("ALL"))
+            if (model.ApplicationUserId.Equals("ALL"))
             {
                 foreach (var user in _context.Users.Include(u => u.Notifications).ToList()
                              .FindAll(u => u.Id != model.SenderId))
@@ -152,7 +152,7 @@ public class AdminController : Controller
             }
             else
             {
-                var user = _context.Users.Include(u => u.Notifications).ToList().Single(u => u.Id == model.ReceiverId);
+                var user = _context.Users.Include(u => u.Notifications).ToList().Single(u => u.Id == model.ApplicationUserId);
                 user.Notifications.Add(new Notification(model.SenderId, user.Id, model.Message));
             }
 
@@ -160,8 +160,13 @@ public class AdminController : Controller
             return RedirectToAction("SendNotification");
         }
 
-        model.ReceiverId = "ALL";
+        model.ApplicationUserId = "ALL";
         return View("SendNotification", model);
     }
 
+    public IActionResult SendInvititation()
+    {
+        List<string> participants = [];
+        return View(participants);
+    }
 }

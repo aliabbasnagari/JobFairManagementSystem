@@ -1,6 +1,6 @@
 ﻿namespace JobFairManagementSystem.Models;
 
-public class InterviewSchedule
+public class Schedule
 {
     public int Id { get; set; }
     public DateTime Date { get; set; }

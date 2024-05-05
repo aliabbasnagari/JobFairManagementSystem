@@ -6,12 +6,20 @@
     ViewBag.active = 0;
 }
 
-<h2>Company Home</h2>
 
-<h1>@Model.Name</h1>
+<h2 class="mb-3">Company Home</h2>
 
-<h1>@Model.Address</h1>
+<div class="container p-5 bg-dark-subtle shadow rounded-4">
 
-<h1>@Model.Email</h1>
+    <h1 class="text-center"><b>Welcome to CareerConnect</b></h1>
 
-<a asp-controller="Company" asp-action="Logout" class="btn btn-danger">Logout</a>
+    <h3 class="mb-3">@Model.Name</h3>
+
+    <h5 class="mb-3">@Model.Description</h5>
+
+    <h3 class="mb-3">@Model.Address</h3>
+
+    <h3 class="mb-3">@Model.Email</h3>
+
+</div>
+

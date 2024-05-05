@@ -1,0 +1,38 @@
+﻿@using System.Runtime.InteropServices
+@using JobFairManagementSystem.Data
+@model Feedback
+@inject ApplicationDbContext Context
+@{
+    ViewBag.Title = "Give Feedback";
+    Layout = "_SideBarLayout";
+    ViewBag.active = 8;
+}
+
+<h2>Give Feedback</h2>
+
+<div>
+    @using (Html.BeginForm("GiveFeedback", "Company"))
+    {
+
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" role="switch" id="anonyCheck">
+            @Html.CheckBoxFor(m => m.Anonymous, new { @class = "form-check-input", role = "switch", id = "anonyCheck" })
+            <label class="form-check-label" for="anonyCheck">Anonymous Feedback</label>
+        </div>
+
+        <div class="mb-2">
+            @Html.LabelFor(m => m.ToUserId)
+            @Html.DropDownListFor(m => m.ToUserId,
+                     new SelectList(Context.Users.ToList().FindAll(u => u.Id != Model.FromUserId), "Id", "Name"), "Select User", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ToUserId)
+        </div>
+        <div class="mb-2">
+            @Html.LabelFor(m => m.Message)
+            @Html.TextAreaFor(m => m.Message, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Message)
+        </div>
+
+        @Html.HiddenFor(m => m.FromUserId)
+        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+    }
+</div>

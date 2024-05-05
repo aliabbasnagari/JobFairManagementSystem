@@ -24,6 +24,10 @@ public class Notification
     [StringLength(36)]
     public string? SenderId { get; set; }
 
+    [StringLength(36)]
+    [DisplayName("Receiver")]
+    public string ApplicationUserId { get; set; }
+
     public Notification()
     {
         CreatedAt = DateTime.Now;
@@ -35,6 +39,7 @@ public class Notification
         CreatedAt = DateTime.Now;
         IsRead = false;
         ReceiverId = rid;
+        ApplicationUserId = rid;
         Message = message;
         SenderId = sid;
     }

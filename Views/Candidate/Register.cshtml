@@ -1,13 +1,13 @@
 ﻿@model Candidate
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Registration";
     Layout = "_Layout";
 
     List<string> genderOptions = ["Male", "Female", "Others"];
 }
 
-<h2>title</h2>
+<h2>Candidate Registration</h2>
 
 @using (Html.BeginForm("Register", "Candidate"))
 {

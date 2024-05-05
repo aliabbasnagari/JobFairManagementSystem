@@ -1,18 +1,100 @@
 ﻿@model JobFairManagementSystem.Data.CandidateUser
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Home";
     Layout = "_SideBarLayout";
+    ViewBag.active = 0;
 }
+<h2>Candidate Home</h2>
 
-<h2>title</h2>
+<div class="container p-5 rounded-4 shadow">
 
-<h2>Company Home</h2>
 
-<h1>@Model.Name</h1>
+    <h1>@Model.Name</h1>
 
-<h1>@Model.Address</h1>
+    <h1>@Model.Address</h1>
 
-<h1>@Model.Email</h1>
+    <h1>@Model.Email</h1>
 
-<a asp-controller="Account" asp-action="Logout" class="btn btn-danger">Logout</a>
+    <hr />
+
+    <div class="mb-3">
+        <h3>My Skills</h3>
+
+        <div class="row mb-2">
+            @if (Model.Skills != null)
+            {
+                foreach (var skill in Model.Skills)
+                {
+                    <li class="col m-1 p-1 rounded-3 text-center list-group-item list-group-item-action list-group-item-success">@skill</li>
+                }
+            }
+        </div>
+        <form asp-action="AddSkill" class="d-flex">
+            <label for="Skill" class="me-2">Skill Name</label>
+            <input id="Skill" name="Skill" type="text" class="form-control me-3" required />
+            <button type="submit" class="btn btn-primary w-50">Add Skill <i class="bi bi-plus"></i></button>
+        </form>
+    </div>
+
+    <hr />
+
+    <div>
+        <h3>My Project</h3>
+
+        <ul>
+            @if (Model.Project != null)
+            {
+                <h2>@Model.Project.Title</h2>
+                <p>@Model.Project.Description</p>
+            }
+            <button id="ShowFormBtn" class="btn btn-primary">Edit Project</button>
+        </ul>
+        <form asp-action="UpdateProject" id="ProjectForm" style="display: none;">
+            <label for="Title" class="me-2">Title</label>
+            <input id="Title" name="Title" type="text" class="form-control mb-2" value="@Model.Project?.Title" required />
+            <label for="Description" class="me-2">Description</label>
+            <textarea id="Description" name="Description" type="text" class="form-control mb-2" value="@Model.Project?.Description" maxlength="1000" rows="5"></textarea>
+            <button id="UpdateProject" type="submit" class="btn btn-primary">Update Project</button>
+        </form>
+    </div>
+
+    <hr />
+
+    <div>
+        <h3>My Social Links</h3>
+
+        <div class="mb-3">
+            @if (Model.SocialLinks != null)
+            {
+                foreach (var slink in Model.SocialLinks)
+                {
+                    <a href="@slink" target="_blank">@slink</a>
+                }
+            }
+        </div>
+        <form asp-action="AddSocialLink" class="d-flex">
+            <label for="SLink">Social Link</label>
+            <input id="SLink" name="SLink" type="text" class="form-control me-3" required />
+            <button type="submit" class="btn btn-primary w-50">Add Link <i class="bi bi-plus"></i> </button>
+        </form>
+    </div>
+
+
+</div>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#ShowFormBtn").click(function () {
+                $('#ProjectForm').show();
+                $(this).hide();
+            });
+
+            $('#UpdateProject').click(function () {
+                $('#ProjectForm').hide();
+                $('#ShowFormBtn').show();
+            });
+        });
+    </script>
+}

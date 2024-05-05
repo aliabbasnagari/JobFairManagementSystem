@@ -39,6 +39,6 @@ namespace JobFairManagementSystem.Models
         [StringLength(255)]
         public string? Venue { get; set; }
 
-        public InterviewSchedule? InterviewSchedule { get; set; }
+        public Schedule? InterviewSchedule { get; set; }
     }
 }

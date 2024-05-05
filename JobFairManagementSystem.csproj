@@ -30,11 +30,13 @@
     <_ContentIncludedByDefault Remove="Views\Admin\Register.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Admin\SendNotification.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Admin\VerifyCompanies.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Candidate\CreateSchedule.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Candidate\Login.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Candidate\Register.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Candidate\Update.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Company\Home.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Company\Login.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Company\ShowFeedback.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Company\Update.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\_LoginPartial.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\_NavBar.cshtml" />
@@ -108,6 +110,14 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Admin\SendNotification.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Candidate\CreateSchedule.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Company\ShowFeedback.cshtml" />
   </ItemGroup>
 
 </Project>

@@ -17,11 +17,16 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
     public DbSet<AdminUser> Administrators { get; set; }
 
-    public DbSet<InterviewSchedule> InterviewSchedules { get; set; }
+    public DbSet<Schedule> InterviewSchedules { get; set; }
+
+    public DbSet<Schedule> ProjectSchedules{ get; set; }
 
     public DbSet<Slot> Slots { get; set; }
 
     public DbSet<Notification> Notifications { get; set; }
 
+    public DbSet<Project> Projects { get; set; }
+
+    public DbSet<Feedback> Feedbacks { get; set; }
 
 }

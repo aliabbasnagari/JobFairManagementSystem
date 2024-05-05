@@ -6,18 +6,19 @@
     ViewBag.Title = "Send Notification";
     Layout = "_SideBarLayout";
     List<ApplicationUser> options = [new ApplicationUser { Id = "ALL", Name = "Send To All" }, .. Context.Users.ToList().FindAll(u => u.Id != Model.SenderId)];
+    ViewBag.active = 6;
 }
 
 <h2>Send Notifications</h2>
 
-<div id="form_individual">
+<div>
     @using (Html.BeginForm("SendNotification", "Admin"))
     {
         <div class="mb-2">
-            @Html.LabelFor(m => m.ReceiverId)
-            @Html.DropDownListFor(m => m.ReceiverId,
+            @Html.LabelFor(m => m.ApplicationUserId)
+            @Html.DropDownListFor(m => m.ApplicationUserId,
                      new SelectList(options, "Id", "Name"), "Select User", new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.ReceiverId)
+            @Html.ValidationMessageFor(m => m.ApplicationUserId)
         </div>
         <div class="mb-2">
             @Html.LabelFor(m => m.Message)

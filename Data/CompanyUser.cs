@@ -23,6 +23,6 @@ namespace JobFairManagementSystem.Data
         [EmailAddress]
         public string ContactEmail { get; set; }
 
-        public InterviewSchedule? InterviewSchedule { get; set; }
+        public Schedule? InterviewSchedule { get; set; }
     }
 }
